@@ -702,41 +702,73 @@ class UsageManager: ObservableObject {
         }
         codexIsLoading = true
         codexErrorMessage = nil
-        fetchCodexUsageEndpoint("https://chatgpt.com/backend-api/codex/usage", allowFallback: true)
+        // wham/usage is the correct endpoint — codex/usage does not exist
+        fetchCodexUsageEndpoint("https://chatgpt.com/backend-api/wham/usage")
     }
 
-    private func fetchCodexUsageEndpoint(_ urlString: String, allowFallback: Bool) {
+    private func fetchCodexUsageEndpoint(_ urlString: String) {
         guard let url = URL(string: urlString) else {
             DispatchQueue.main.async { self.codexErrorMessage = "Invalid Codex URL"; self.codexIsLoading = false }
             return
         }
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
+        request.timeoutInterval = 20
+
+        // Full browser header set — Cloudflare on chatgpt.com blocks requests missing these
         request.setValue(codexSessionCookie, forHTTPHeaderField: "Cookie")
-        request.setValue("*/*", forHTTPHeaderField: "Accept")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
+        request.setValue("en-US,en;q=0.9", forHTTPHeaderField: "Accept-Language")
+        request.setValue("gzip, deflate, br", forHTTPHeaderField: "Accept-Encoding")
         request.setValue("https://chatgpt.com", forHTTPHeaderField: "Origin")
         request.setValue("https://chatgpt.com/codex/settings/usage", forHTTPHeaderField: "Referer")
-        request.setValue("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36", forHTTPHeaderField: "User-Agent")
+        request.setValue("chatgpt.com", forHTTPHeaderField: "Authority")
+        request.setValue(
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            forHTTPHeaderField: "User-Agent"
+        )
+        request.setValue("?1", forHTTPHeaderField: "Sec-Fetch-User")
+        request.setValue("same-origin", forHTTPHeaderField: "Sec-Fetch-Site")
+        request.setValue("cors", forHTTPHeaderField: "Sec-Fetch-Mode")
+        request.setValue("empty", forHTTPHeaderField: "Sec-Fetch-Dest")
+        request.setValue("1", forHTTPHeaderField: "DNT")
 
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             DispatchQueue.main.async {
                 guard let self = self else { return }
+
                 if let error = error {
-                    NSLog("❌ Codex error: \(error.localizedDescription)")
-                    if allowFallback { self.fetchCodexUsageEndpoint("https://chatgpt.com/backend-api/wham/usage", allowFallback: false) }
-                    else { self.codexErrorMessage = "Network error"; self.codexIsLoading = false; self.updateStatusBar() }
+                    NSLog("❌ Codex network error: \(error.localizedDescription)")
+                    self.codexErrorMessage = "Network error: \(error.localizedDescription)"
+                    self.codexIsLoading = false
+                    self.updateStatusBar()
                     return
                 }
+
                 guard let http = response as? HTTPURLResponse else {
-                    self.codexErrorMessage = "Invalid response"; self.codexIsLoading = false; self.updateStatusBar(); return
+                    self.codexErrorMessage = "Invalid response"
+                    self.codexIsLoading = false
+                    self.updateStatusBar()
+                    return
                 }
+
+                NSLog("📡 Codex HTTP \(http.statusCode) from \(urlString)")
+
+                if let data = data, let body = String(data: data, encoding: .utf8) {
+                    NSLog("📦 Codex body (first 400): \(String(body.prefix(400)))")
+                }
+
                 if http.statusCode == 200, let data = data, self.parseCodexUsageData(data) {
-                    self.codexIsLoading = false; self.updateStatusBar()
-                } else if allowFallback {
-                    self.fetchCodexUsageEndpoint("https://chatgpt.com/backend-api/wham/usage", allowFallback: false)
+                    self.codexIsLoading = false
+                    self.updateStatusBar()
+                } else if http.statusCode == 401 || http.statusCode == 403 {
+                    self.codexErrorMessage = "Cookie expired or invalid (HTTP \(http.statusCode)) — please re-paste your Codex cookie"
+                    self.codexIsLoading = false
+                    self.updateStatusBar()
                 } else {
-                    self.codexErrorMessage = "HTTP \(http.statusCode)"; self.codexIsLoading = false; self.updateStatusBar()
+                    self.codexErrorMessage = "HTTP \(http.statusCode) — check your cookie is fresh and complete"
+                    self.codexIsLoading = false
+                    self.updateStatusBar()
                 }
             }
         }.resume()
@@ -1192,12 +1224,12 @@ struct CookiesSectionView: View {
                 title: "Codex Cookie",
                 accentColor: .green,
                 instructions: [
-                    ("1", "Open chatgpt.com and sign in with a ChatGPT Pro account (Codex access required)"),
+                    ("1", "Open chatgpt.com and sign in with a ChatGPT Pro account that has Codex access"),
                     ("2", "Navigate to chatgpt.com/codex/settings/usage"),
-                    ("3", "Open DevTools: press F12 on Windows/Linux or Cmd+Option+I on Mac"),
-                    ("4", "Click the Network tab and refresh the page"),
-                    ("5", "Look for a request to /backend-api/codex/usage or /backend-api/wham/usage"),
-                    ("6", "Under Request Headers, find 'Cookie' and copy the entire value — it will be a very long string")
+                    ("3", "Open DevTools: Cmd+Option+I on Mac, or F12 on Windows/Linux"),
+                    ("4", "Click the Network tab, then refresh the page (Cmd+R)"),
+                    ("5", "Find the request to /backend-api/wham/usage and click it"),
+                    ("6", "Under Request Headers → Cookie, copy the complete value. It is very long (includes cf_clearance, oai-sc, etc) — copy every character, do not truncate")
                 ],
                 placeholder: "Paste full ChatGPT Cookie header value here...",
                 text: $codexCookieInput,

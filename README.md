@@ -95,11 +95,16 @@ The original [ClaudeUsageBar](https://github.com/Artzainnn/ClaudeUsageBar) by **
 6. Copy the entire value (starts with `anthropic-device-id=`, very long — copy all of it)
 
 ### Codex Cookie
-1. Open [chatgpt.com/codex/settings/usage](https://chatgpt.com/codex/settings/usage) with a ChatGPT Pro account
-2. Open DevTools (`Cmd+Option+I`)
-3. Click **Network** tab and refresh
-4. Find a request to `/backend-api/codex/usage` or `/backend-api/wham/usage`
-5. Under Request Headers → **Cookie** — copy the full value
+1. Open [chatgpt.com/codex/settings/usage](https://chatgpt.com/codex/settings/usage) with a ChatGPT Pro account that has Codex access
+2. Open DevTools (`Cmd+Option+I` on Mac, `F12` on Windows/Linux)
+3. Click the **Network** tab, then refresh the page (`Cmd+R`)
+4. Find the request to **`/backend-api/wham/usage`** and click it
+5. Under **Request Headers → Cookie**, copy the complete value
+6. It will be very long (includes `cf_clearance`, `oai-sc`, `_umsid`, etc.) — copy every character, do not truncate
+
+> **Why `wham/usage`?** The Codex usage data is served from `/backend-api/wham/usage`. The `/backend-api/codex/usage` endpoint does not exist and will return a 404.
+
+> **Why so many cookie fields?** ChatGPT runs behind Cloudflare. The `cf_clearance` value is a Cloudflare challenge token — without it, all requests return 403. The entire cookie string from the `wham/usage` request headers must be copied intact.
 
 Paste each cookie in the app under **Settings → Cookies**.
 

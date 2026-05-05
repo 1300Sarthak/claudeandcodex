@@ -663,7 +663,25 @@
       </div>
       <div class="faq-item">
         <div class="faq-question">How do I get my Codex cookie?</div>
-        <div class="faq-answer">Navigate to <a href="https://chatgpt.com/codex/settings/usage" target="_blank">chatgpt.com/codex/settings/usage</a>, open DevTools, go to Network, refresh, and find the /backend-api/codex/usage request. Copy the full Cookie header value.</div>
+        <div class="faq-answer">
+          Navigate to <a href="https://chatgpt.com/codex/settings/usage" target="_blank">chatgpt.com/codex/settings/usage</a> (ChatGPT Pro with Codex access required). Open DevTools (Cmd+Option+I on Mac, F12 on Windows), go to the <strong>Network</strong> tab, refresh the page, and find the request to <strong>/backend-api/wham/usage</strong>. Under Request Headers → Cookie, copy the <em>entire</em> value — it is very long and includes <code>cf_clearance</code>, <code>oai-sc</code>, <code>_umsid</code>, and more. Copy every character without truncating.
+        </div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Why does the app use <code>/backend-api/wham/usage</code> for Codex?</div>
+        <div class="faq-answer">That is the actual endpoint ChatGPT serves Codex usage data from. The path <code>/backend-api/codex/usage</code> does not exist and returns a 404. If you copied your cookie from a different request, it will still work — the cookie is the same site-wide. Just make sure you are looking at the <strong>wham/usage</strong> request in the Network tab so the cookie is fresh and includes the Cloudflare <code>cf_clearance</code> token.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">My Codex cookie gives a 401 or 403 error — what's wrong?</div>
+        <div class="faq-answer">
+          Three common causes:
+          <br><br>
+          <strong>1. Expired <code>cf_clearance</code></strong> — Cloudflare tokens expire quickly. Re-open DevTools on chatgpt.com, refresh the page, and copy the cookie again from a fresh /backend-api/wham/usage request.
+          <br><br>
+          <strong>2. Truncated cookie</strong> — The cookie string is very long. If you missed even one character or your clipboard cut it off, the request fails. Try again and paste into a text editor first to verify it ends with a full value (not a partial one).
+          <br><br>
+          <strong>3. No Codex access</strong> — Your ChatGPT account may not have Codex enabled. Try visiting <a href="https://chatgpt.com/codex" target="_blank">chatgpt.com/codex</a> directly and confirm you can access it.
+        </div>
       </div>
       <div class="faq-item">
         <div class="faq-question">Is my data safe?</div>
