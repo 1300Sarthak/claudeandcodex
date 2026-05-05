@@ -12,10 +12,11 @@ enum ThemeMode: String, CaseIterable, Identifiable {
     case dark = "Dark"
     var id: String { rawValue }
 
-    var colorScheme: ColorScheme? {
+    // Use NSAppearance directly — .preferredColorScheme inverts on macOS popovers
+    var nsAppearance: NSAppearance? {
         switch self {
-        case .dark: return .dark
-        case .light: return .light
+        case .dark: return NSAppearance(named: .darkAqua)
+        case .light: return NSAppearance(named: .aqua)
         case .system: return nil
         }
     }
@@ -119,9 +120,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         popover = NSPopover()
         popover.contentSize = NSSize(width: 440, height: 540)
         popover.behavior = .transient
+        popover.appearance = usageManager.themeMode.nsAppearance
         popover.contentViewController = NSHostingController(
             rootView: UsageDashboardView(usageManager: usageManager)
-                .preferredColorScheme(usageManager.themeMode.colorScheme)
         )
 
         usageManager.fetchAllUsage()
@@ -155,9 +156,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func reloadPopoverView() {
         guard let manager = usageManager else { return }
+        popover.appearance = manager.themeMode.nsAppearance
         popover.contentViewController = NSHostingController(
             rootView: UsageDashboardView(usageManager: manager)
-                .preferredColorScheme(manager.themeMode.colorScheme)
         )
     }
 
@@ -188,7 +189,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
             let alert = NSAlert()
             alert.messageText = "Accessibility Permission Required"
-            alert.informativeText = "ClaudeUsageBar needs Accessibility permission to use the Cmd+U keyboard shortcut.\n\nPlease enable it in:\nSystem Settings → Privacy & Security → Accessibility"
+            alert.informativeText = "Claude + Codex Usage Tracker needs Accessibility permission to use the Cmd+U keyboard shortcut.\n\nPlease enable it in:\nSystem Settings → Privacy & Security → Accessibility"
             alert.alertStyle = .informational
             alert.addButton(withTitle: "Open System Settings")
             alert.addButton(withTitle: "Skip for Now")
@@ -249,7 +250,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             let settingsItem = NSMenuItem(title: "Settings...", action: #selector(openSettings), keyEquivalent: ",")
             menu.addItem(settingsItem)
             menu.addItem(NSMenuItem.separator())
-            menu.addItem(NSMenuItem(title: "Quit ClaudeUsageBar", action: #selector(quitApp), keyEquivalent: "q"))
+            menu.addItem(NSMenuItem(title: "Quit Claude + Codex Tracker", action: #selector(quitApp), keyEquivalent: "q"))
             statusItem.menu = menu
             statusItem.button?.performClick(nil)
             statusItem.menu = nil
@@ -266,6 +267,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         guard let button = statusItem.button else { return }
         let w: CGFloat = usageManager?.sideBySideLayout == true ? 820 : 440
         popover.contentSize = NSSize(width: w, height: 540)
+        popover.appearance = usageManager?.themeMode.nsAppearance
         DispatchQueue.main.async { self.usageManager.updatePercentages() }
         popover.show(relativeTo: button.bounds, of: button, preferredEdge: .minY)
         eventMonitor = NSEvent.addGlobalMonitorForEvents(matching: [.leftMouseDown, .rightMouseDown]) { [weak self] _ in
@@ -896,7 +898,7 @@ class SettingsWindowController: NSWindowController, NSWindowDelegate {
             backing: .buffered,
             defer: false
         )
-        window.title = "ClaudeUsageBar — Settings"
+        window.title = "Claude + Codex Usage Tracker — Settings"
         window.center()
         window.isReleasedWhenClosed = false
         super.init(window: window)
@@ -907,9 +909,10 @@ class SettingsWindowController: NSWindowController, NSWindowDelegate {
 
     func open(usageManager: UsageManager) {
         self.usageManager = usageManager
-        let rootView = SettingsWindowView(usageManager: usageManager)
-            .preferredColorScheme(usageManager.themeMode.colorScheme)
-        window?.contentViewController = NSHostingController(rootView: rootView)
+        window?.appearance = usageManager.themeMode.nsAppearance
+        window?.contentViewController = NSHostingController(
+            rootView: SettingsWindowView(usageManager: usageManager)
+        )
         showWindow(nil)
         NSApp.activate(ignoringOtherApps: true)
         window?.makeKeyAndOrderFront(nil)
@@ -1310,7 +1313,7 @@ struct AboutSectionView: View {
                                 Image(systemName: "link")
                                     .font(.caption2)
                                     .foregroundColor(.secondary)
-                                Text("ClaudeUsageBar by Maxime B. — the original that inspired this fork")
+                                Text("ClaudeUsageBar by Maxime B. — original inspiration and foundation")
                                     .font(.caption2)
                                     .foregroundColor(.secondary)
                             }
@@ -1520,7 +1523,7 @@ struct UsageDashboardView: View {
                     Image(systemName: "bolt.fill")
                         .font(.system(size: 13, weight: .bold))
                         .foregroundColor(.orange)
-                    Text("ClaudeUsageBar")
+                    Text("Claude + Codex")
                         .font(.system(size: 13, weight: .semibold))
                 }
                 Spacer()
@@ -1644,7 +1647,6 @@ struct UsageDashboardView: View {
             }
         }
         .frame(width: usageManager.sideBySideLayout ? 820 : 440, height: 540)
-        .preferredColorScheme(usageManager.themeMode.colorScheme)
         .onAppear {
             selectedTab = usageManager.activeTab
             usageManager.updatePercentages()
