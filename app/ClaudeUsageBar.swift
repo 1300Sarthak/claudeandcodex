@@ -914,14 +914,36 @@ struct SettingsWindowView: View {
     }
 
     var body: some View {
-        NavigationSplitView {
-            List(SettingsSection.allCases, selection: $selectedSection) { section in
-                Label(section.rawValue, systemImage: section.icon)
-                    .tag(section)
+        HStack(spacing: 0) {
+            // Sidebar
+            VStack(alignment: .leading, spacing: 2) {
+                ForEach(SettingsSection.allCases) { section in
+                    Button(action: { selectedSection = section }) {
+                        HStack(spacing: 8) {
+                            Image(systemName: section.icon)
+                                .font(.system(size: 13))
+                                .frame(width: 18, alignment: .center)
+                            Text(section.rawValue)
+                                .font(.subheadline)
+                            Spacer()
+                        }
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 7)
+                        .background(selectedSection == section ? Color.accentColor.opacity(0.15) : Color.clear)
+                        .cornerRadius(7)
+                        .foregroundColor(selectedSection == section ? .primary : .secondary)
+                    }
+                    .buttonStyle(.plain)
+                }
+                Spacer()
             }
-            .listStyle(.sidebar)
-            .frame(minWidth: 160)
-        } detail: {
+            .padding(10)
+            .frame(width: 165)
+            .background(Color.secondary.opacity(0.05))
+
+            Divider()
+
+            // Detail
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     switch selectedSection {
@@ -935,7 +957,7 @@ struct SettingsWindowView: View {
                 }
                 .padding(24)
             }
-            .frame(minWidth: 380)
+            .frame(minWidth: 395)
         }
         .frame(width: 560, height: 660)
         .onAppear {
@@ -1241,35 +1263,10 @@ struct AboutSectionView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     HStack(spacing: 10) {
-                        Link(destination: URL(string: "https://github.com/1300Sarthak")!) {
-                            Label("GitHub", systemImage: "chevron.left.forwardslash.chevron.right")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 8)
-                                .background(Color.secondary.opacity(0.12))
-                                .cornerRadius(8)
-                        }
-                        Link(destination: URL(string: "https://sarthak.lol")!) {
-                            Label("Website", systemImage: "globe")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 8)
-                                .background(Color.secondary.opacity(0.12))
-                                .cornerRadius(8)
-                        }
-                        Link(destination: URL(string: "https://donate.stripe.com/3cIcN5b5H7Q8ay8bIDfIs02")!) {
-                            Label("Buy a Coffee", systemImage: "cup.and.saucer.fill")
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 8)
-                                .background(Color.orange.opacity(0.15))
-                                .cornerRadius(8)
-                        }
+                        AboutLinkButton(label: "GitHub", icon: "chevron.left.forwardslash.chevron.right", url: "https://github.com/1300Sarthak", bg: Color.secondary.opacity(0.12))
+                        AboutLinkButton(label: "Website", icon: "globe", url: "https://sarthak.lol", bg: Color.secondary.opacity(0.12))
+                        AboutLinkButton(label: "Buy a Coffee", icon: "cup.and.saucer.fill", url: "https://donate.stripe.com/3cIcN5b5H7Q8ay8bIDfIs02", bg: Color.orange.opacity(0.15))
                     }
-                    .buttonStyle(.plain)
                 }
             }
         }
@@ -1277,6 +1274,27 @@ struct AboutSectionView: View {
 }
 
 // MARK: - Settings UI Components
+
+struct AboutLinkButton: View {
+    let label: String
+    let icon: String
+    let url: String
+    let bg: Color
+
+    var body: some View {
+        Button(action: {
+            if let u = URL(string: url) { NSWorkspace.shared.open(u) }
+        }) {
+            Label(label, systemImage: icon)
+                .font(.subheadline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
+                .background(bg)
+                .cornerRadius(8)
+        }
+        .buttonStyle(.plain)
+    }
+}
 
 struct SettingsSectionHeader: View {
     let title: String
