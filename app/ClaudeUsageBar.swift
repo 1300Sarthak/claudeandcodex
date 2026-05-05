@@ -1235,7 +1235,7 @@ struct AboutSectionView: View {
                                 .foregroundColor(.white)
                         }
                         VStack(alignment: .leading, spacing: 3) {
-                            Text("ClaudeUsageBar")
+                            Text("Claude + Codex Usage Tracker")
                                 .font(.title2)
                                 .fontWeight(.bold)
                             Text("Monitor Claude & Codex usage from your menu bar")
@@ -1263,10 +1263,29 @@ struct AboutSectionView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
 
                     HStack(spacing: 10) {
-                        AboutLinkButton(label: "GitHub", icon: "chevron.left.forwardslash.chevron.right", url: "https://github.com/1300Sarthak", bg: Color.secondary.opacity(0.12))
+                        AboutLinkButton(label: "GitHub", icon: "chevron.left.forwardslash.chevron.right", url: "https://github.com/1300Sarthak/claudeandcodex", bg: Color.secondary.opacity(0.12))
                         AboutLinkButton(label: "Website", icon: "globe", url: "https://sarthak.lol", bg: Color.secondary.opacity(0.12))
-                        AboutLinkButton(label: "Buy a Coffee", icon: "cup.and.saucer.fill", url: "https://donate.stripe.com/3cIcN5b5H7Q8ay8bIDfIs02", bg: Color.orange.opacity(0.15))
                     }
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Based on")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Button(action: { NSWorkspace.shared.open(URL(string: "https://github.com/Artzainnn/ClaudeUsageBar")!) }) {
+                            HStack(spacing: 6) {
+                                Image(systemName: "link")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                                Text("ClaudeUsageBar by Maxime B. — the original that inspired this fork")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
