@@ -3,6 +3,7 @@ import AppKit
 import WebKit
 import Carbon
 import Combine
+import UserNotifications
 
 // MARK: - Enums
 
@@ -495,6 +496,7 @@ class UsageManager: ObservableObject {
 
     // App state
     @Published var notificationsEnabled: Bool = true
+    @Published var notificationThresholds: [Int] = [75, 90]
     @Published var openAtLogin: Bool = false
     @Published var isAccessibilityEnabled: Bool = false
     @Published var shortcutEnabled: Bool = true
@@ -544,6 +546,10 @@ class UsageManager: ObservableObject {
         if !UserDefaults.standard.bool(forKey: "has_set_notifications") {
             notificationsEnabled = true
             UserDefaults.standard.set(true, forKey: "has_set_notifications")
+            requestNotificationPermission()
+        }
+        if let saved = UserDefaults.standard.array(forKey: "notification_thresholds") as? [Int] {
+            notificationThresholds = saved
         }
         openAtLogin = UserDefaults.standard.bool(forKey: "open_at_login")
         shortcutEnabled = UserDefaults.standard.object(forKey: "shortcut_enabled") as? Bool ?? true
@@ -575,6 +581,7 @@ class UsageManager: ObservableObject {
 
     func saveSettings() {
         UserDefaults.standard.set(notificationsEnabled, forKey: "notifications_enabled")
+        UserDefaults.standard.set(notificationThresholds, forKey: "notification_thresholds")
         UserDefaults.standard.set(openAtLogin, forKey: "open_at_login")
         UserDefaults.standard.set(shortcutEnabled, forKey: "shortcut_enabled")
         UserDefaults.standard.set(activeTab.rawValue, forKey: "active_usage_tab")
@@ -764,12 +771,17 @@ class UsageManager: ObservableObject {
         else { checkNotificationThresholds(percentage: sessionPct) }
     }
 
+    func requestNotificationPermission() {
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+    }
+
     func checkNotificationThresholds(percentage: Int) {
         guard notificationsEnabled else { return }
-        let thresholds = [25, 50, 75, 90]
+        let thresholds = notificationThresholds.sorted()
         for threshold in thresholds {
             if percentage >= threshold && lastNotifiedThreshold < threshold {
-                sendNotification(title: "Claude Usage Alert", body: "You've reached \(percentage)% of your 5-hour session limit")
+                sendNotification(title: "Claude Usage Alert",
+                                 body: "You've reached \(percentage)% of your 5-hour session limit")
                 lastNotifiedThreshold = threshold
                 UserDefaults.standard.set(lastNotifiedThreshold, forKey: "last_notified_threshold")
             }
@@ -782,10 +794,11 @@ class UsageManager: ObservableObject {
 
     func checkCodexNotificationThresholds(percentage: Int) {
         guard notificationsEnabled else { return }
-        let thresholds = [25, 50, 75, 90]
+        let thresholds = notificationThresholds.sorted()
         for threshold in thresholds {
             if percentage >= threshold && lastCodexNotifiedThreshold < threshold {
-                sendNotification(title: "Codex Usage Alert", body: "You've reached \(percentage)% of your Codex session limit")
+                sendNotification(title: "Codex Usage Alert",
+                                 body: "You've reached \(percentage)% of your Codex session limit")
                 lastCodexNotifiedThreshold = threshold
                 UserDefaults.standard.set(lastCodexNotifiedThreshold, forKey: "last_codex_notified_threshold")
             }
@@ -797,14 +810,16 @@ class UsageManager: ObservableObject {
     }
 
     func sendNotification(title: String, body: String) {
-        let notification = NSUserNotification()
-        notification.title = title
-        notification.informativeText = body
-        notification.soundName = NSUserNotificationDefaultSoundName
-        NSUserNotificationCenter.default.deliver(notification)
+        let content = UNMutableNotificationContent()
+        content.title = title
+        content.body = body
+        content.sound = .default
+        let req = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(req)
     }
 
     func sendTestNotification() {
+        requestNotificationPermission()
         sendNotification(title: "Claude Usage Alert", body: "Test — You've reached 75% of your 5-hour session limit")
     }
 
@@ -1326,6 +1341,7 @@ struct DisplaySectionView: View {
 
 struct NotificationsSectionView: View {
     @ObservedObject var usageManager: UsageManager
+    @State private var newThreshold: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -1335,13 +1351,71 @@ struct NotificationsSectionView: View {
                 VStack(alignment: .leading, spacing: 14) {
                     SettingsToggleRow(
                         label: "Usage alerts",
-                        description: "Get notified at 25%, 50%, 75%, and 90% session usage",
-                        isOn: Binding(get: { usageManager.notificationsEnabled }, set: { usageManager.notificationsEnabled = $0; usageManager.saveSettings() })
+                        description: "Get notified when session usage crosses your chosen thresholds",
+                        isOn: Binding(get: { usageManager.notificationsEnabled }, set: {
+                            usageManager.notificationsEnabled = $0
+                            if $0 { usageManager.requestNotificationPermission() }
+                            usageManager.saveSettings()
+                        })
                     )
+
+                    Divider()
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Alert thresholds")
+                            .font(.system(size: 12, weight: .medium))
+                        Text("Notify when session usage reaches these percentages")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        ForEach(usageManager.notificationThresholds.sorted(), id: \.self) { t in
+                            HStack {
+                                Text("\(t)%")
+                                    .font(.system(size: 13, design: .monospaced))
+                                Spacer()
+                                Button(action: {
+                                    usageManager.notificationThresholds.removeAll { $0 == t }
+                                    usageManager.saveSettings()
+                                }) {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundColor(.red.opacity(0.7))
+                                }
+                                .buttonStyle(.plain)
+                            }
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(Color.secondary.opacity(0.06))
+                            .cornerRadius(6)
+                        }
+
+                        if usageManager.notificationThresholds.count < 5 {
+                            HStack(spacing: 6) {
+                                TextField("e.g. 80", text: $newThreshold)
+                                    .textFieldStyle(.roundedBorder)
+                                    .frame(width: 65)
+                                Text("%").foregroundColor(.secondary)
+                                Button("Add") {
+                                    if let val = Int(newThreshold), (1...99).contains(val),
+                                       !usageManager.notificationThresholds.contains(val) {
+                                        usageManager.notificationThresholds.append(val)
+                                        usageManager.saveSettings()
+                                        newThreshold = ""
+                                    }
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .controlSize(.small)
+                                .disabled({
+                                    guard let v = Int(newThreshold) else { return true }
+                                    return !(1...99).contains(v) || usageManager.notificationThresholds.contains(v)
+                                }())
+                            }
+                        }
+                    }
+
                     Divider()
                     SettingsToggleRow(
                         label: "Open at login",
-                        description: "Launch ClaudeUsageBar automatically when you log in",
+                        description: "Launch the app automatically when you log in",
                         isOn: Binding(get: { usageManager.openAtLogin }, set: { usageManager.openAtLogin = $0; usageManager.saveSettings() })
                     )
                     Divider()
