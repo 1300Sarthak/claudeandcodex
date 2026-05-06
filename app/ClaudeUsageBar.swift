@@ -451,6 +451,59 @@ extension NSColor {
     }
 }
 
+// MARK: - Codex Login Window
+
+class CodexLoginWindowController: NSWindowController, WKNavigationDelegate {
+    private var webView: WKWebView!
+    var onLoginSuccess: ((String) -> Void)?
+
+    static func create(onSuccess: @escaping (String) -> Void) -> CodexLoginWindowController {
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 560, height: 680),
+            styleMask: [.titled, .closable, .miniaturizable, .resizable],
+            backing: .buffered,
+            defer: false
+        )
+        window.title = "Sign in to ChatGPT — Codex Access"
+        window.center()
+        let ctrl = CodexLoginWindowController(window: window)
+        ctrl.onLoginSuccess = onSuccess
+        ctrl.setupWebView()
+        return ctrl
+    }
+
+    private func setupWebView() {
+        guard let contentView = window?.contentView else { return }
+        webView = WKWebView(frame: contentView.bounds)
+        webView.autoresizingMask = [.width, .height]
+        webView.navigationDelegate = self
+        contentView.addSubview(webView)
+        if let url = URL(string: "https://chatgpt.com/auth/login") {
+            webView.load(URLRequest(url: url))
+        }
+    }
+
+    // Capture cookies once the user has navigated past the auth pages
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        guard let url = webView.url, let host = url.host else { return }
+        guard host.contains("chatgpt.com") || host.contains("openai.com") else { return }
+        let path = url.path
+        guard !path.hasPrefix("/auth") && !path.hasPrefix("/sso") else { return }
+
+        webView.configuration.websiteDataStore.httpCookieStore.getAllCookies { [weak self] cookies in
+            let relevant = cookies.filter {
+                $0.domain.hasSuffix("chatgpt.com") || $0.domain.hasSuffix("openai.com")
+            }
+            guard !relevant.isEmpty else { return }
+            let cookieStr = relevant.map { "\($0.name)=\($0.value)" }.joined(separator: "; ")
+            DispatchQueue.main.async {
+                self?.onLoginSuccess?(cookieStr)
+                self?.close()
+            }
+        }
+    }
+}
+
 // MARK: - UsageManager
 
 class UsageManager: ObservableObject {
@@ -523,6 +576,7 @@ class UsageManager: ObservableObject {
     private weak var delegate: AppDelegate?
     private var lastNotifiedThreshold: Int = 0
     private var lastCodexNotifiedThreshold: Int = 0
+    private var codexLoginController: CodexLoginWindowController?
 
     init(statusItem: NSStatusItem?, delegate: AppDelegate? = nil) {
         self.statusItem = statusItem
@@ -644,6 +698,18 @@ class UsageManager: ObservableObject {
         UserDefaults.standard.set(0, forKey: "last_codex_notified_threshold")
         updateCodexPercentages()
         updateStatusBar()
+    }
+
+    func openCodexLogin() {
+        codexLoginController = CodexLoginWindowController.create { [weak self] cookieStr in
+            guard let self = self else { return }
+            self.saveCodexSessionCookie(cookieStr)
+            self.fetchCodexUsage()
+            self.codexLoginController = nil
+        }
+        codexLoginController?.showWindow(nil)
+        codexLoginController?.window?.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     func hasClaudeCookie() -> Bool { !sessionCookie.isEmpty }
@@ -1502,8 +1568,33 @@ struct CookiesSectionView: View {
                 clearAction: { claudeCookieInput = ""; usageManager.clearSessionCookie() }
             )
 
+            SettingsCard {
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        Image(systemName: "arrow.up.forward.app.fill")
+                            .font(.system(size: 13))
+                            .foregroundColor(.green)
+                        Text("Sign in automatically")
+                            .font(.system(size: 12, weight: .semibold))
+                        Spacer()
+                    }
+                    Text("Open ChatGPT in a browser window and log in — the cookie is captured automatically.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    Button(action: { usageManager.openCodexLogin() }) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "person.badge.key.fill")
+                            Text("Login with ChatGPT")
+                        }
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.regular)
+                    .tint(.green)
+                }
+            }
+
             EnhancedCookieCard(
-                title: "Codex Cookie",
+                title: "Codex Cookie (manual)",
                 accentColor: .green,
                 instructions: [
                     ("1", "Open chatgpt.com and sign in with a ChatGPT Pro account that has Codex access"),
