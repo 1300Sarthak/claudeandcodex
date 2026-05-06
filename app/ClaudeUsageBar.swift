@@ -76,6 +76,13 @@ enum StatusBarStyle: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+enum ChartType: String, CaseIterable, Identifiable {
+    case line = "Line"
+    case bar = "Bar"
+    case donut = "Donut"
+    var id: String { rawValue }
+}
+
 struct UsageHistoryPoint: Codable, Identifiable {
     let timestamp: Date
     let primaryPercentage: Double
@@ -453,6 +460,7 @@ class UsageManager: ObservableObject {
     @Published var barStyle: BarStyle = .rounded
     @Published var accentPreset: AccentColorPreset = .default
     @Published var statusBarStyle: StatusBarStyle = .miniBars
+    @Published var chartType: ChartType = .line
     @Published var showBothInStatusBar: Bool = false
     @Published var sideBySideLayout: Bool = false
     @Published var showGraph: Bool = true
@@ -504,6 +512,7 @@ class UsageManager: ObservableObject {
         if let raw = UserDefaults.standard.string(forKey: "bar_style"), let b = BarStyle(rawValue: raw) { barStyle = b }
         if let raw = UserDefaults.standard.string(forKey: "accent_preset"), let a = AccentColorPreset(rawValue: raw) { accentPreset = a }
         if let raw = UserDefaults.standard.string(forKey: "status_bar_style"), let s = StatusBarStyle(rawValue: raw) { statusBarStyle = s }
+        if let raw = UserDefaults.standard.string(forKey: "chart_type"), let c = ChartType(rawValue: raw) { chartType = c }
         showBothInStatusBar = UserDefaults.standard.object(forKey: "show_both_status_bar") as? Bool ?? false
         sideBySideLayout = UserDefaults.standard.object(forKey: "side_by_side_layout") as? Bool ?? false
         showGraph = UserDefaults.standard.object(forKey: "show_graph") as? Bool ?? true
@@ -522,6 +531,7 @@ class UsageManager: ObservableObject {
         UserDefaults.standard.set(barStyle.rawValue, forKey: "bar_style")
         UserDefaults.standard.set(accentPreset.rawValue, forKey: "accent_preset")
         UserDefaults.standard.set(statusBarStyle.rawValue, forKey: "status_bar_style")
+        UserDefaults.standard.set(chartType.rawValue, forKey: "chart_type")
         UserDefaults.standard.set(showBothInStatusBar, forKey: "show_both_status_bar")
         UserDefaults.standard.set(sideBySideLayout, forKey: "side_by_side_layout")
         UserDefaults.standard.set(showGraph, forKey: "show_graph")
@@ -1166,6 +1176,17 @@ struct DisplaySectionView: View {
                         isOn: Binding(get: { usageManager.showGraph }, set: { usageManager.showGraph = $0; usageManager.saveSettings() })
                     )
                     Divider()
+                    SettingsRow(label: "Chart style", description: "Line chart, bar chart, or donut rings") {
+                        Picker("", selection: Binding(
+                            get: { usageManager.chartType },
+                            set: { usageManager.chartType = $0; usageManager.saveSettings() }
+                        )) {
+                            ForEach(ChartType.allCases) { c in Text(c.rawValue).tag(c) }
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(width: 180)
+                    }
+                    Divider()
                     SettingsToggleRow(
                         label: "Compact mode",
                         description: "Reduce padding and use smaller text for a denser layout",
@@ -1635,6 +1656,7 @@ struct UsageDashboardView: View {
                             compactMode: usageManager.compactMode,
                             barStyle: usageManager.barStyle,
                             accentPreset: usageManager.accentPreset,
+                            chartType: usageManager.chartType,
                             refreshAction: { usageManager.fetchUsage() }
                         )
                         .padding(14)
@@ -1655,6 +1677,7 @@ struct UsageDashboardView: View {
                             compactMode: usageManager.compactMode,
                             barStyle: usageManager.barStyle,
                             accentPreset: usageManager.accentPreset,
+                            chartType: usageManager.chartType,
                             refreshAction: { usageManager.fetchCodexUsage() }
                         )
                         .padding(14)
@@ -1693,6 +1716,7 @@ struct UsageDashboardView: View {
                                 compactMode: usageManager.compactMode,
                                 barStyle: usageManager.barStyle,
                                 accentPreset: usageManager.accentPreset,
+                                chartType: usageManager.chartType,
                                 refreshAction: { usageManager.fetchUsage() }
                             )
                         case .codex:
@@ -1710,6 +1734,7 @@ struct UsageDashboardView: View {
                                 compactMode: usageManager.compactMode,
                                 barStyle: usageManager.barStyle,
                                 accentPreset: usageManager.accentPreset,
+                                chartType: usageManager.chartType,
                                 refreshAction: { usageManager.fetchCodexUsage() }
                             )
                         }
@@ -1773,6 +1798,7 @@ struct ProviderUsagePanel: View {
     let compactMode: Bool
     let barStyle: BarStyle
     let accentPreset: AccentColorPreset
+    let chartType: ChartType
     let refreshAction: () -> Void
 
     @State private var spinRefresh = false
@@ -1848,15 +1874,17 @@ struct ProviderUsagePanel: View {
                     Divider()
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
-                            Text("Usage trend")
+                            Text(chartType == .donut ? "Current usage" : "Usage trend")
                                 .font(compactMode ? .caption : .subheadline)
                                 .fontWeight(.semibold)
                             Spacer()
-                            Text("\(history.count) samples")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
+                            if chartType != .donut {
+                                Text("\(history.count) samples")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                            }
                         }
-                        UsageHistoryGraph(history: history, accentPreset: accentPreset)
+                        UsageChartView(chartType: chartType, history: history, metrics: metrics, accentPreset: accentPreset)
                             .frame(height: compactMode ? 80 : 110)
                     }
                 }
@@ -1977,21 +2005,31 @@ struct StyledProgressBar: View {
     }
 }
 
-// MARK: - History Graph
+// MARK: - Charts
 
-struct UsageHistoryGraph: View {
+struct UsageChartView: View {
+    let chartType: ChartType
+    let history: [UsageHistoryPoint]
+    let metrics: [UsageMetric]
+    let accentPreset: AccentColorPreset
+
+    var body: some View {
+        switch chartType {
+        case .line: UsageLineChart(history: history, accentPreset: accentPreset)
+        case .bar:  UsageBarChart(history: history, accentPreset: accentPreset)
+        case .donut: UsageDonutChart(metrics: metrics, accentPreset: accentPreset)
+        }
+    }
+}
+
+struct UsageLineChart: View {
     let history: [UsageHistoryPoint]
     let accentPreset: AccentColorPreset
 
     var body: some View {
         GeometryReader { geometry in
             if history.count < 2 {
-                Text("Graph appears after two data points.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .frame(width: geometry.size.width, height: geometry.size.height)
-                    .background(Color.secondary.opacity(0.07))
-                    .cornerRadius(8)
+                emptyLabel(size: geometry.size)
             } else {
                 ZStack {
                     RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.07))
@@ -2030,6 +2068,141 @@ struct UsageHistoryGraph: View {
         HStack(spacing: 4) {
             Circle().fill(color).frame(width: 7, height: 7)
             Text(label).font(.caption2).foregroundColor(.secondary)
+        }
+    }
+
+    private func emptyLabel(size: CGSize) -> some View {
+        Text("Graph appears after two data points.")
+            .font(.caption).foregroundColor(.secondary)
+            .frame(width: size.width, height: size.height)
+            .background(Color.secondary.opacity(0.07))
+            .cornerRadius(8)
+    }
+}
+
+struct UsageBarChart: View {
+    let history: [UsageHistoryPoint]
+    let accentPreset: AccentColorPreset
+
+    var body: some View {
+        GeometryReader { geo in
+            if history.count < 2 {
+                Text("Graph appears after two data points.")
+                    .font(.caption).foregroundColor(.secondary)
+                    .frame(width: geo.size.width, height: geo.size.height)
+                    .background(Color.secondary.opacity(0.07))
+                    .cornerRadius(8)
+            } else {
+                ZStack(alignment: .bottomLeading) {
+                    RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.07))
+                    let count = history.count
+                    let groupW = (geo.size.width - 16) / CGFloat(count)
+                    let barW = max(groupW * 0.35, 2)
+                    let pad: CGFloat = 8
+                    HStack(alignment: .bottom, spacing: 0) {
+                        ForEach(history) { point in
+                            VStack(alignment: .leading, spacing: 1) {
+                                Spacer()
+                                HStack(alignment: .bottom, spacing: 1) {
+                                    RoundedRectangle(cornerRadius: 2)
+                                        .fill(accentPreset.color(for: point.primaryPercentage))
+                                        .frame(width: barW, height: max((geo.size.height - 16) * CGFloat(min(max(point.primaryPercentage, 0), 1)), 2))
+                                    RoundedRectangle(cornerRadius: 2)
+                                        .fill(Color(red: 0.37, green: 0.51, blue: 0.71).opacity(0.8))
+                                        .frame(width: barW, height: max((geo.size.height - 16) * CGFloat(min(max(point.secondaryPercentage, 0), 1)), 2))
+                                }
+                            }
+                            .frame(width: groupW, height: geo.size.height - 8, alignment: .bottom)
+                        }
+                    }
+                    .padding(.horizontal, pad)
+                    .padding(.bottom, 4)
+                    VStack {
+                        HStack(spacing: 10) {
+                            barLegend(color: accentPreset.color(for: history.last?.primaryPercentage ?? 0), label: "5h")
+                            barLegend(color: Color(red: 0.37, green: 0.51, blue: 0.71), label: "7d")
+                            Spacer()
+                        }
+                        Spacer()
+                    }
+                    .padding(8)
+                }
+            }
+        }
+    }
+
+    private func barLegend(color: Color, label: String) -> some View {
+        HStack(spacing: 4) {
+            RoundedRectangle(cornerRadius: 1).fill(color).frame(width: 8, height: 8)
+            Text(label).font(.caption2).foregroundColor(.secondary)
+        }
+    }
+}
+
+struct UsageDonutChart: View {
+    let metrics: [UsageMetric]
+    let accentPreset: AccentColorPreset
+
+    var body: some View {
+        GeometryReader { geo in
+            let size = min(geo.size.width, geo.size.height)
+            let ringW: CGFloat = size * 0.12
+            let outerR = size / 2 - 4
+            let innerR = outerR - ringW - 4
+            let cx = geo.size.width / 2
+            let cy = geo.size.height / 2
+
+            ZStack {
+                RoundedRectangle(cornerRadius: 8).fill(Color.secondary.opacity(0.07))
+                    .frame(width: geo.size.width, height: geo.size.height)
+
+                // Outer ring track (session)
+                Circle().stroke(Color.secondary.opacity(0.15), lineWidth: ringW)
+                    .frame(width: outerR * 2, height: outerR * 2)
+                    .position(x: cx, y: cy)
+
+                // Inner ring track (weekly)
+                if metrics.count > 1 {
+                    Circle().stroke(Color.secondary.opacity(0.15), lineWidth: ringW)
+                        .frame(width: innerR * 2, height: innerR * 2)
+                        .position(x: cx, y: cy)
+                }
+
+                // Outer ring fill (session)
+                if let first = metrics.first {
+                    Circle()
+                        .trim(from: 0, to: CGFloat(min(max(first.percentage, 0), 1)))
+                        .stroke(accentPreset.color(for: first.percentage),
+                                style: StrokeStyle(lineWidth: ringW, lineCap: .round))
+                        .frame(width: outerR * 2, height: outerR * 2)
+                        .rotationEffect(.degrees(-90))
+                        .position(x: cx, y: cy)
+                }
+
+                // Inner ring fill (weekly)
+                if metrics.count > 1 {
+                    let second = metrics[1]
+                    Circle()
+                        .trim(from: 0, to: CGFloat(min(max(second.percentage, 0), 1)))
+                        .stroke(Color(red: 0.37, green: 0.51, blue: 0.71),
+                                style: StrokeStyle(lineWidth: ringW, lineCap: .round))
+                        .frame(width: innerR * 2, height: innerR * 2)
+                        .rotationEffect(.degrees(-90))
+                        .position(x: cx, y: cy)
+                }
+
+                // Center label
+                if let first = metrics.first {
+                    VStack(spacing: 1) {
+                        Text("\(Int(first.percentage * 100))%")
+                            .font(.system(size: size * 0.14, weight: .bold, design: .rounded))
+                        Text("5h")
+                            .font(.system(size: size * 0.08))
+                            .foregroundColor(.secondary)
+                    }
+                    .position(x: cx, y: cy)
+                }
+            }
         }
     }
 }
