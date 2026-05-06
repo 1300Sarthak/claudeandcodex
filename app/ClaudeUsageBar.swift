@@ -35,7 +35,15 @@ enum AccentColorPreset: String, CaseIterable, Identifiable {
     case sunset = "Sunset"
     case ocean = "Ocean"
     case monochrome = "Mono"
+    case neon = "Neon"
+    case glaucous = "Glaucous"
+    case rose = "Rose"
+    case amber = "Amber"
+    case arctic = "Arctic"
+    case custom = "Custom"
     var id: String { rawValue }
+
+    var sampleColor: Color { color(for: 0.4) }
 
     func color(for percentage: Double) -> Color {
         switch self {
@@ -59,7 +67,44 @@ enum AccentColorPreset: String, CaseIterable, Identifiable {
             if percentage < 0.7 { return Color(white: 0.58) }
             else if percentage < 0.9 { return Color(white: 0.38) }
             else { return Color(white: 0.2) }
+        case .neon:
+            if percentage < 0.7 { return Color(red: 0.0, green: 1.0, blue: 0.5) }
+            else if percentage < 0.9 { return Color(red: 1.0, green: 0.2, blue: 0.6) }
+            else { return Color(red: 1.0, green: 0.4, blue: 0.0) }
+        case .glaucous:
+            if percentage < 0.7 { return Color(red: 0.376, green: 0.510, blue: 0.714) }
+            else if percentage < 0.9 { return Color(red: 0.239, green: 0.518, blue: 0.808) }
+            else { return Color(red: 0.118, green: 0.243, blue: 0.486) }
+        case .rose:
+            if percentage < 0.7 { return Color(red: 1.0, green: 0.55, blue: 0.65) }
+            else if percentage < 0.9 { return Color(red: 0.9, green: 0.2, blue: 0.4) }
+            else { return Color(red: 0.75, green: 0.0, blue: 0.12) }
+        case .amber:
+            if percentage < 0.7 { return Color(red: 1.0, green: 0.85, blue: 0.3) }
+            else if percentage < 0.9 { return Color(red: 1.0, green: 0.62, blue: 0.0) }
+            else { return Color(red: 0.85, green: 0.33, blue: 0.0) }
+        case .arctic:
+            if percentage < 0.7 { return Color(red: 0.73, green: 0.85, blue: 1.0) }
+            else if percentage < 0.9 { return Color(red: 0.49, green: 0.62, blue: 0.86) }
+            else { return Color(red: 0.35, green: 0.45, blue: 0.65) }
+        case .custom:
+            let low = UserDefaults.standard.string(forKey: "custom_color_low") ?? "#22C55E"
+            let mid = UserDefaults.standard.string(forKey: "custom_color_mid") ?? "#F59E0B"
+            let high = UserDefaults.standard.string(forKey: "custom_color_high") ?? "#EF4444"
+            if percentage < 0.7 { return Color(hex: low) ?? .green }
+            else if percentage < 0.9 { return Color(hex: mid) ?? .orange }
+            else { return Color(hex: high) ?? .red }
         }
+    }
+}
+
+extension Color {
+    init?(hex: String) {
+        let s = hex.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "#", with: "")
+        guard s.count == 6, let v = UInt64(s, radix: 16) else { return nil }
+        self.init(red: Double((v >> 16) & 0xFF) / 255,
+                  green: Double((v >> 8) & 0xFF) / 255,
+                  blue: Double(v & 0xFF) / 255)
     }
 }
 
@@ -461,6 +506,9 @@ class UsageManager: ObservableObject {
     @Published var accentPreset: AccentColorPreset = .default
     @Published var statusBarStyle: StatusBarStyle = .miniBars
     @Published var chartType: ChartType = .line
+    @Published var customColorLow: String = "#22C55E"
+    @Published var customColorMid: String = "#F59E0B"
+    @Published var customColorHigh: String = "#EF4444"
     @Published var showBothInStatusBar: Bool = false
     @Published var sideBySideLayout: Bool = false
     @Published var showGraph: Bool = true
@@ -513,6 +561,9 @@ class UsageManager: ObservableObject {
         if let raw = UserDefaults.standard.string(forKey: "accent_preset"), let a = AccentColorPreset(rawValue: raw) { accentPreset = a }
         if let raw = UserDefaults.standard.string(forKey: "status_bar_style"), let s = StatusBarStyle(rawValue: raw) { statusBarStyle = s }
         if let raw = UserDefaults.standard.string(forKey: "chart_type"), let c = ChartType(rawValue: raw) { chartType = c }
+        customColorLow = UserDefaults.standard.string(forKey: "custom_color_low") ?? "#22C55E"
+        customColorMid = UserDefaults.standard.string(forKey: "custom_color_mid") ?? "#F59E0B"
+        customColorHigh = UserDefaults.standard.string(forKey: "custom_color_high") ?? "#EF4444"
         showBothInStatusBar = UserDefaults.standard.object(forKey: "show_both_status_bar") as? Bool ?? false
         sideBySideLayout = UserDefaults.standard.object(forKey: "side_by_side_layout") as? Bool ?? false
         showGraph = UserDefaults.standard.object(forKey: "show_graph") as? Bool ?? true
@@ -532,6 +583,9 @@ class UsageManager: ObservableObject {
         UserDefaults.standard.set(accentPreset.rawValue, forKey: "accent_preset")
         UserDefaults.standard.set(statusBarStyle.rawValue, forKey: "status_bar_style")
         UserDefaults.standard.set(chartType.rawValue, forKey: "chart_type")
+        UserDefaults.standard.set(customColorLow, forKey: "custom_color_low")
+        UserDefaults.standard.set(customColorMid, forKey: "custom_color_mid")
+        UserDefaults.standard.set(customColorHigh, forKey: "custom_color_high")
         UserDefaults.standard.set(showBothInStatusBar, forKey: "show_both_status_bar")
         UserDefaults.standard.set(sideBySideLayout, forKey: "side_by_side_layout")
         UserDefaults.standard.set(showGraph, forKey: "show_graph")
@@ -1079,6 +1133,22 @@ struct SettingsWindowView: View {
 struct AppearanceSectionView: View {
     @ObservedObject var usageManager: UsageManager
 
+    @ViewBuilder
+    private func hexField(label: String, value: Binding<String>) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(label).font(.system(size: 9)).foregroundColor(.secondary)
+            HStack(spacing: 4) {
+                Circle()
+                    .fill(Color(hex: value.wrappedValue) ?? Color.secondary.opacity(0.3))
+                    .frame(width: 12, height: 12)
+                TextField("#RRGGBB", text: value)
+                    .font(.system(size: 11, design: .monospaced))
+                    .frame(width: 70)
+                    .textFieldStyle(.roundedBorder)
+            }
+        }
+    }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             SettingsSectionHeader(title: "Appearance", icon: "paintbrush.fill")
@@ -1098,15 +1168,57 @@ struct AppearanceSectionView: View {
 
                     Divider()
 
-                    SettingsRow(label: "Color Palette", description: "Progress bar color theme") {
-                        Picker("", selection: Binding(
-                            get: { usageManager.accentPreset },
-                            set: { usageManager.accentPreset = $0; usageManager.saveSettings() }
-                        )) {
-                            ForEach(AccentColorPreset.allCases) { preset in Text(preset.rawValue).tag(preset) }
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Color Palette")
+                            .font(.system(size: 12, weight: .medium))
+                        Text("Progress bar color theme")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                        let cols = [GridItem(.adaptive(minimum: 68))]
+                        LazyVGrid(columns: cols, spacing: 6) {
+                            ForEach(AccentColorPreset.allCases) { preset in
+                                Button(action: { usageManager.accentPreset = preset; usageManager.saveSettings() }) {
+                                    VStack(spacing: 3) {
+                                        Circle()
+                                            .fill(preset == .custom
+                                                  ? (Color(hex: usageManager.customColorLow) ?? .green)
+                                                  : preset.sampleColor)
+                                            .frame(width: 18, height: 18)
+                                            .overlay(Circle().stroke(usageManager.accentPreset == preset ? Color.primary : Color.clear, lineWidth: 2))
+                                        Text(preset.rawValue)
+                                            .font(.system(size: 9))
+                                            .foregroundColor(usageManager.accentPreset == preset ? .primary : .secondary)
+                                    }
+                                    .padding(.vertical, 5)
+                                    .padding(.horizontal, 3)
+                                    .background(usageManager.accentPreset == preset ? Color.secondary.opacity(0.15) : Color.clear)
+                                    .cornerRadius(6)
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
-                        .pickerStyle(.menu)
-                        .frame(width: 130)
+                        if usageManager.accentPreset == .custom {
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("Custom hex colors  (e.g. #22C55E)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                HStack(spacing: 8) {
+                                    hexField(label: "Low <70%", value: Binding(
+                                        get: { usageManager.customColorLow },
+                                        set: { usageManager.customColorLow = $0; UserDefaults.standard.set($0, forKey: "custom_color_low"); usageManager.saveSettings() }
+                                    ))
+                                    hexField(label: "Mid 70–90%", value: Binding(
+                                        get: { usageManager.customColorMid },
+                                        set: { usageManager.customColorMid = $0; UserDefaults.standard.set($0, forKey: "custom_color_mid"); usageManager.saveSettings() }
+                                    ))
+                                    hexField(label: "High ≥90%", value: Binding(
+                                        get: { usageManager.customColorHigh },
+                                        set: { usageManager.customColorHigh = $0; UserDefaults.standard.set($0, forKey: "custom_color_high"); usageManager.saveSettings() }
+                                    ))
+                                }
+                            }
+                            .padding(.top, 4)
+                        }
                     }
 
                     Divider()
