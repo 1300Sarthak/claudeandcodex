@@ -1890,11 +1890,12 @@ struct UsageDashboardView: View {
             // Header
             HStack(alignment: .center, spacing: 8) {
                 HStack(spacing: 6) {
-                    Image(systemName: "bolt.fill")
+                    Image(systemName: "chart.bar.fill")
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundColor(.orange)
+                        .foregroundColor(Color(red: 0.376, green: 0.510, blue: 0.714))
                     Text("Claude + Codex")
                         .font(.system(size: 13, weight: .semibold))
+                        .foregroundColor(.primary)
                 }
                 Spacer()
                 Button(action: {
@@ -1904,7 +1905,7 @@ struct UsageDashboardView: View {
                 }) {
                     Image(systemName: "gearshape.fill")
                         .font(.system(size: 13))
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.primary.opacity(0.6))
                 }
                 .buttonStyle(.plain)
                 .help("Settings")
@@ -1912,6 +1913,7 @@ struct UsageDashboardView: View {
             .padding(.horizontal, 14)
             .padding(.top, 12)
             .padding(.bottom, 10)
+            .background(Color(.windowBackgroundColor))
 
             Divider()
 
@@ -2021,6 +2023,7 @@ struct UsageDashboardView: View {
             }
         }
         .frame(width: usageManager.sideBySideLayout ? 820 : 440, height: 540)
+        .background(Color(.windowBackgroundColor))
         .onAppear {
             selectedTab = usageManager.activeTab
             usageManager.updatePercentages()
@@ -2194,12 +2197,13 @@ struct UsageMetricRow: View {
             HStack {
                 Text(metric.title)
                     .font(compactMode ? .caption : .subheadline)
-                    .fontWeight(.medium)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
                 Spacer()
                 if let d = metric.resetDate {
                     Text("Resets \(formatResetTime(d, includeDate: metric.includeDate))")
                         .font(.caption2)
-                        .foregroundColor(.secondary)
+                        .foregroundColor(Color.primary.opacity(0.6))
                 }
             }
 
@@ -2212,32 +2216,34 @@ struct UsageMetricRow: View {
             HStack {
                 Text("\(Int(clamped(metric.percentage) * 100))% used")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .fontWeight(.medium)
+                    .foregroundColor(Color.primary.opacity(0.75))
                 Spacer()
                 if metric.percentage >= 0.9 {
                     Text("Critical")
                         .font(.caption2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.red)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color.red.opacity(0.12))
+                        .background(Color.red.opacity(0.85))
                         .cornerRadius(4)
                 } else if metric.percentage >= 0.7 {
                     Text("High")
                         .font(.caption2)
-                        .fontWeight(.semibold)
-                        .foregroundColor(.orange)
+                        .fontWeight(.bold)
+                        .foregroundColor(.white)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(Color.orange.opacity(0.12))
+                        .background(Color.orange.opacity(0.85))
                         .cornerRadius(4)
                 }
             }
         }
-        .padding(compactMode ? 8 : 11)
-        .background(Color.secondary.opacity(0.07))
+        .padding(compactMode ? 8 : 12)
+        .background(Color.primary.opacity(0.06))
         .cornerRadius(10)
+        .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color.primary.opacity(0.08), lineWidth: 0.5))
     }
 
     private func clamped(_ v: Double) -> Double { min(max(v, 0), 1) }
@@ -2264,17 +2270,17 @@ struct StyledProgressBar: View {
         case .thin:
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
-                    Capsule().fill(Color.secondary.opacity(0.18)).frame(height: 3)
-                    Capsule().fill(color).frame(width: geo.size.width * value, height: 3)
+                    Capsule().fill(Color.secondary.opacity(0.25)).frame(height: 4)
+                    Capsule().fill(color).frame(width: geo.size.width * value, height: 4)
                 }
-                .frame(height: 3)
+                .frame(height: 4)
             }
-            .frame(height: 3)
+            .frame(height: 4)
         case .segmented:
             HStack(spacing: 3) {
                 ForEach(0..<10, id: \.self) { i in
                     RoundedRectangle(cornerRadius: 3)
-                        .fill(Double(i) / 10.0 < value ? color : Color.secondary.opacity(0.18))
+                        .fill(Double(i) / 10.0 < value ? color : Color.secondary.opacity(0.25))
                         .frame(height: 10)
                 }
             }
