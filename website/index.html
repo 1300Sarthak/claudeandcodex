@@ -475,8 +475,8 @@
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-        <h3>5 Color Palettes <span class="feature-new">NEW</span></h3>
-        <p>Default, Matrix, Sunset, Ocean, Monochrome — each with a live preview in the settings window before you commit.</p>
+        <h3>11 Color Palettes + Custom <span class="feature-new">NEW</span></h3>
+        <p>Default, Matrix, Sunset, Ocean, Mono, Neon, Glaucous, Rose, Amber, Arctic, and a fully custom mode where you pick your own hex colors for each threshold.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
@@ -490,13 +490,23 @@
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
-        <h3>Smart Notifications</h3>
-        <p>Alerts at 25%, 50%, 75%, and 90% for both Claude and Codex. No permissions required — uses macOS system notifications.</p>
+        <h3>Custom Alert Thresholds <span class="feature-new">NEW</span></h3>
+        <p>Set your own notification percentages (up to 5). Add or remove thresholds from Settings → Notifications. Uses native macOS notifications.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-        <h3>Usage History Graph</h3>
-        <p>Trend chart showing session and weekly usage over time. Color follows your chosen palette. Toggle it off in compact mode.</p>
+        <h3>3 Chart Types <span class="feature-new">NEW</span></h3>
+        <p>Line chart (trend history), Bar chart (grouped vertical bars), or Donut rings (current usage as concentric rings). Switch in Display settings.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 12h18M12 3v18"/></svg></div>
+        <h3>Mini Bar Status Display <span class="feature-new">NEW</span></h3>
+        <p>The menu bar now shows two stacked mini bars (5h session + 7d weekly) instead of the old star icon. At a glance: both limits, always visible.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <h3>Codex Login Flow <span class="feature-new">NEW</span></h3>
+        <p>Sign in to ChatGPT via an embedded browser. Cookies are captured automatically — no DevTools needed. Manual paste still available as fallback.</p>
       </div>
       <div class="feature-card">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
@@ -531,15 +541,18 @@
           <tr><td>ChatGPT Codex tracking</td><td class="cross">—</td><td class="check">✓</td></tr>
           <tr><td>Settings window</td><td>Inline panel</td><td>Dedicated NSWindow</td></tr>
           <tr><td>Theme (Dark/Light/System)</td><td class="cross">—</td><td class="check">✓</td></tr>
-          <tr><td>Color palettes</td><td>Fixed colors</td><td>5 presets with live preview</td></tr>
+          <tr><td>Color palettes</td><td>Fixed colors</td><td>11 presets + custom hex</td></tr>
           <tr><td>Bar styles</td><td>Rounded only</td><td>Rounded / Thin / Segmented</td></tr>
-          <tr><td>Status bar 7d %</td><td class="cross">—</td><td class="check">✓ optional dual display</td></tr>
+          <tr><td>Chart types</td><td class="cross">—</td><td class="check">Line / Bar / Donut</td></tr>
+          <tr><td>Status bar display</td><td>Star + %</td><td>Mini bars (5h+7d) / Icon / Text</td></tr>
           <tr><td>Side-by-side layout</td><td class="cross">—</td><td class="check">✓</td></tr>
           <tr><td>Compact mode</td><td class="cross">—</td><td class="check">✓</td></tr>
           <tr><td>Configurable refresh interval</td><td>Fixed 5 min</td><td>1 / 5 / 15 / 30 min</td></tr>
           <tr><td>Cookie setup guide</td><td>3 steps</td><td>6 detailed steps per service</td></tr>
+          <tr><td>Codex authentication</td><td class="cross">—</td><td class="check">Login flow + manual paste</td></tr>
+          <tr><td>Notification thresholds</td><td>Fixed 25/50/75/90%</td><td>Custom (up to 5 thresholds)</td></tr>
+          <tr><td>Notification system</td><td>Deprecated NSUserNotification</td><td>UNUserNotificationCenter</td></tr>
           <tr><td>Settings icon button</td><td>Text tab</td><td>Gear icon → floating window</td></tr>
-          <tr><td>Refresh button</td><td>Text button</td><td>Animated arrow icon</td></tr>
           <tr><td>Critical / High badges</td><td class="cross">—</td><td class="check">✓</td></tr>
         </tbody>
       </table>
@@ -553,11 +566,18 @@
       <p>Planned features — PRs welcome at <a href="https://github.com/1300Sarthak/claudeandcodex" target="_blank" style="color: var(--accent); text-decoration: none;">github.com/1300Sarthak/claudeandcodex</a></p>
     </div>
     <div class="roadmap-grid">
-      <div class="roadmap-item">
-        <div class="roadmap-icon">📊</div>
+      <div class="roadmap-item" style="opacity:0.6;border-color:rgba(96,130,182,0.4);">
+        <div class="roadmap-icon">✅</div>
         <div class="roadmap-text">
-          <h4>Better Graphs</h4>
-          <p>Area fills, time axis labels, zoom/pan, sparklines in the status bar itself</p>
+          <h4>Better Graphs <span style="font-size:11px;color:var(--accent);font-weight:600;">SHIPPED</span></h4>
+          <p>Bar chart and donut ring chart alongside the existing line chart — all switchable in Display settings.</p>
+        </div>
+      </div>
+      <div class="roadmap-item" style="opacity:0.6;border-color:rgba(96,130,182,0.4);">
+        <div class="roadmap-icon">✅</div>
+        <div class="roadmap-text">
+          <h4>Custom Thresholds <span style="font-size:11px;color:var(--accent);font-weight:600;">SHIPPED</span></h4>
+          <p>Set up to 5 custom notification percentages from Settings → Notifications. Add or remove any time.</p>
         </div>
       </div>
       <div class="roadmap-item">
@@ -579,13 +599,6 @@
         <div class="roadmap-text">
           <h4>Windsurf + Copilot</h4>
           <p>Bring in more AI coding tools — Windsurf, GitHub Copilot, and more</p>
-        </div>
-      </div>
-      <div class="roadmap-item">
-        <div class="roadmap-icon">🔔</div>
-        <div class="roadmap-text">
-          <h4>Custom Thresholds</h4>
-          <p>Set your own notification percentages instead of fixed 25/50/75/90</p>
         </div>
       </div>
       <div class="roadmap-item">
@@ -698,6 +711,18 @@
       <div class="faq-item">
         <div class="faq-question">How do I contribute or add a new service?</div>
         <div class="faq-answer">Check the README at <a href="https://github.com/1300Sarthak/claudeandcodex" target="_blank">github.com/1300Sarthak/claudeandcodex</a> — it has a step-by-step guide for adding a new service (Gemini, Cursor, etc.), new color palettes, and new bar styles. PRs are very welcome.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">How do I set custom notification thresholds?</div>
+        <div class="faq-answer">Go to Settings → Notifications. You'll see your current thresholds listed (default: 75% and 90%). Click the minus button to remove any, and type a new percentage (1–99) then "Add" to add one. You can have up to 5 thresholds. They apply to both Claude and Codex sessions.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">Can I switch between Line, Bar, and Donut charts?</div>
+        <div class="faq-answer">Yes. Go to Settings → Display → Chart Style. "Line" shows a trend over time, "Bar" shows the same history as grouped vertical bars, and "Donut" shows your current session and weekly usage as concentric rings with the percentage in the center.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-question">How does the Codex login flow work?</div>
+        <div class="faq-answer">Click "Login with ChatGPT" in Settings → Cookies. An embedded browser opens at chatgpt.com. Log in normally — once you land on the main ChatGPT site, the app captures your session cookies automatically and closes the window. You don't need to open DevTools.</div>
       </div>
     </div>
   </section>

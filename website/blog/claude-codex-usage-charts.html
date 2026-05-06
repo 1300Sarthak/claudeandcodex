@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en" style="background-color: #080C14;">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#080C14">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="canonical" href="https://claudeusagebar.com/blog/claude-codex-usage-charts">
+  <title>Visualize Your Claude Usage With Bar and Donut Charts - ClaudeUsageBar</title>
+  <meta name="description" content="Claude + Codex Tracker now offers three chart types — line, bar, and donut. Learn how each one helps you understand your usage patterns differently.">
+  <meta name="keywords" content="claude usage chart, claude usage visualization, claude donut chart, claude bar chart, claude code usage graph, codex usage chart">
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="https://claudeusagebar.com/blog/claude-codex-usage-charts">
+  <meta property="og:title" content="Visualize Your Claude Usage With Bar and Donut Charts">
+  <meta property="og:description" content="Three chart types — line, bar, and donut — so you can see your usage exactly the way that makes sense for how you work.">
+  <meta property="og:image" content="https://claudeusagebar.com/og-image.png">
+  <meta property="og:site_name" content="ClaudeUsageBar">
+  <meta property="article:published_time" content="2026-05-06T00:00:00Z">
+  <meta property="article:author" content="Sarthak Sethi">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Visualize Your Claude Usage With Bar and Donut Charts">
+  <meta name="twitter:description" content="Three chart types — line, bar, and donut — so you can see your usage exactly the way that makes sense for how you work.">
+  <meta name="twitter:image" content="https://claudeusagebar.com/og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "Visualize Your Claude Usage With Bar and Donut Charts",
+    "description": "Claude + Codex Tracker now offers three chart types — line, bar, and donut — for visualizing your usage history.",
+    "author": { "@type": "Person", "name": "Sarthak Sethi" },
+    "publisher": { "@type": "Organization", "name": "ClaudeUsageBar", "url": "https://claudeusagebar.com" },
+    "datePublished": "2026-05-06",
+    "dateModified": "2026-05-06",
+    "mainEntityOfPage": { "@type": "WebPage", "@id": "https://claudeusagebar.com/blog/claude-codex-usage-charts" },
+    "image": "https://claudeusagebar.com/og-image.png"
+  }
+  </script>
+  <style>
+    :root {
+      --accent: #6082B6; --accent-dark: #4A6FA5; --accent-light: #7B9CC8;
+      --bg-dark: #080C14; --bg-card: #0F1623; --bg-card-hover: #16202E;
+      --text-primary: #fafafa; --text-secondary: #a1a1aa; --text-muted: #71717a;
+      --border: #1E2D45;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; background-color: #080C14 !important; }
+    body { font-family: 'Inter', -apple-system, sans-serif; background-color: #080C14 !important; color: var(--text-primary); line-height: 1.6; overflow-x: hidden; min-height: 100vh; }
+    .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .ambient::before { content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%); width: 800px; height: 600px; background: radial-gradient(ellipse, rgba(96,130,182,0.12) 0%, transparent 70%); filter: blur(80px); }
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; padding: 16px 24px; background: rgba(8,12,20,0.85); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border); }
+    .nav-content { max-width: 1200px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
+    .logo-icon { width: 32px; height: 32px; border-radius: 7px; background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%); display: flex; align-items: center; justify-content: center; }
+    .logo-icon svg { width: 18px; height: 18px; }
+    .logo-text { font-weight: 600; font-size: 17px; letter-spacing: -0.02em; }
+    .nav-links { display: flex; align-items: center; gap: 28px; }
+    .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-cta { background: var(--accent) !important; color: white !important; padding: 9px 18px; border-radius: 8px; }
+    .article-wrapper { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 120px 24px 80px; }
+    .article-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(96,130,182,0.12); color: var(--accent-light); border: 1px solid rgba(96,130,182,0.2); border-radius: 20px; padding: 5px 14px; font-size: 13px; font-weight: 500; margin-bottom: 20px; }
+    .article-title { font-size: clamp(26px, 5vw, 40px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: 16px; }
+    .article-meta { display: flex; align-items: center; gap: 16px; color: var(--text-muted); font-size: 14px; margin-bottom: 40px; padding-bottom: 32px; border-bottom: 1px solid var(--border); }
+    .article-meta span { display: flex; align-items: center; gap: 6px; }
+    .article-body h2 { font-size: 22px; font-weight: 700; margin: 40px 0 14px; letter-spacing: -0.02em; }
+    .article-body h3 { font-size: 17px; font-weight: 600; margin: 28px 0 10px; color: var(--text-secondary); }
+    .article-body p { color: var(--text-secondary); font-size: 16px; line-height: 1.75; margin-bottom: 18px; }
+    .article-body a { color: var(--accent-light); text-decoration: none; border-bottom: 1px solid rgba(123,156,200,0.3); }
+    .article-body a:hover { border-color: var(--accent-light); }
+    .article-body ul, .article-body ol { margin: 0 0 18px 24px; color: var(--text-secondary); font-size: 16px; line-height: 1.75; }
+    .article-body li { margin-bottom: 8px; }
+    .article-body strong { color: var(--text-primary); font-weight: 600; }
+    .tip-box { background: rgba(96,130,182,0.08); border: 1px solid rgba(96,130,182,0.2); border-left: 3px solid var(--accent); border-radius: 8px; padding: 16px 20px; margin: 24px 0; }
+    .tip-box p { color: var(--text-secondary); font-size: 15px; margin: 0; }
+    .chart-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin: 20px 0; }
+    .chart-card-header { display: flex; align-items: center; gap: 14px; margin-bottom: 16px; }
+    .chart-icon { width: 40px; height: 40px; border-radius: 9px; background: rgba(96,130,182,0.12); border: 1px solid rgba(96,130,182,0.2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .chart-icon svg { width: 22px; height: 22px; color: var(--accent-light); }
+    .chart-card h3 { font-size: 17px; font-weight: 600; margin: 0; color: var(--text-primary); }
+    .chart-card .chart-badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 4px; background: rgba(96,130,182,0.15); color: var(--accent-light); margin-left: auto; }
+    .chart-card p { color: var(--text-secondary); font-size: 15px; line-height: 1.65; margin: 0 0 12px; }
+    .chart-card ul { margin: 0 0 0 20px; color: var(--text-secondary); font-size: 14px; line-height: 1.7; }
+    .chart-card li { margin-bottom: 4px; }
+    .chart-preview { background: rgba(8,12,20,0.6); border: 1px solid var(--border); border-radius: 8px; padding: 20px; margin-top: 16px; display: flex; align-items: flex-end; justify-content: center; height: 80px; gap: 6px; }
+    .bar-preview-bar { border-radius: 3px 3px 0 0; }
+    .donut-preview { display: flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 50%; }
+    .line-preview svg { width: 100%; height: 50px; }
+    .cta-box { background: linear-gradient(135deg, rgba(74,111,165,0.15) 0%, rgba(96,130,182,0.08) 100%); border: 1px solid rgba(96,130,182,0.25); border-radius: 14px; padding: 32px; text-align: center; margin: 48px 0; }
+    .cta-box h3 { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+    .cta-box p { color: var(--text-secondary); font-size: 15px; margin-bottom: 20px; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: white; text-decoration: none; padding: 12px 24px; border-radius: 10px; font-weight: 600; font-size: 15px; border-bottom: none; transition: background 0.2s; }
+    .cta-btn:hover { background: var(--accent-light) !important; border-bottom: none !important; }
+    footer { position: relative; z-index: 1; padding: 40px 24px; border-top: 1px solid var(--border); text-align: center; }
+    footer p { color: var(--text-muted); font-size: 13px; }
+    footer a { color: var(--text-muted); text-decoration: none; }
+    footer a:hover { color: var(--text-secondary); }
+    @media (max-width: 768px) { .nav-links { display: none; } .article-wrapper { padding: 100px 20px 60px; } }
+  </style>
+</head>
+<body>
+  <div class="ambient"></div>
+  <nav>
+    <div class="nav-content">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="12" width="4" height="9" rx="1" fill="white" opacity="0.75"/>
+            <rect x="10" y="7" width="4" height="14" rx="1" fill="white" opacity="0.9"/>
+            <rect x="17" y="3" width="4" height="18" rx="1" fill="white"/>
+          </svg>
+        </div>
+        <span class="logo-text">Claude + Codex Tracker</span>
+      </a>
+      <div class="nav-links">
+        <a href="/#features">Features</a>
+        <a href="/blog/">Blog</a>
+        <a href="https://github.com/1300Sarthak/claudeandcodex" target="_blank">GitHub</a>
+        <a href="https://github.com/1300Sarthak/claudeandcodex/releases" target="_blank" class="nav-cta">Download</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="article-wrapper">
+    <div class="article-tag">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Charts
+    </div>
+    <h1 class="article-title">Visualize Your Claude Usage With Bar and Donut Charts</h1>
+    <div class="article-meta">
+      <span>📅 May 6, 2026</span>
+      <span>✍️ Sarthak Sethi</span>
+      <span>⏱ 5 min read</span>
+    </div>
+
+    <div class="article-body">
+      <p>The original ClaudeUsageBar only had one way to visualize usage history: a line chart. That's fine, but line charts don't tell the whole story. Claude + Codex Tracker now ships with three chart types — line, bar, and donut — each optimized for a different way of reading your usage data.</p>
+
+      <p>You can switch chart types live from the Display section of Settings. The change takes effect immediately in the popover.</p>
+
+      <h2>The Three Chart Types</h2>
+
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+            </svg>
+          </div>
+          <h3>Line Chart</h3>
+          <span class="chart-badge">Original</span>
+        </div>
+        <p>The classic view. Usage percentage is plotted over time as a continuous curve, making it easy to spot acceleration — the slope steepens when you're burning through your limit fast.</p>
+        <ul>
+          <li>Best for: seeing rate of consumption over time</li>
+          <li>Good at: detecting when usage suddenly spiked</li>
+          <li>Less useful for: comparing individual time buckets</li>
+        </ul>
+        <div class="chart-preview">
+          <svg viewBox="0 0 200 50" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:50px;">
+            <polyline points="10,45 40,40 70,32 100,28 130,18 160,10 190,8" fill="none" stroke="#6082B6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <polyline points="10,45 40,40 70,32 100,28 130,18 160,10 190,8 190,50 10,50" fill="rgba(96,130,182,0.08)" stroke="none"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="12" width="4" height="9" rx="1"/><rect x="10" y="7" width="4" height="14" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/>
+            </svg>
+          </div>
+          <h3>Bar Chart</h3>
+          <span class="chart-badge">New</span>
+        </div>
+        <p>Each time bucket renders as a vertical bar, colored by usage level using the same accent palette as the progress bars. Low usage is cool blue; high usage shifts toward red or orange depending on your chosen color theme.</p>
+        <ul>
+          <li>Best for: comparing discrete time periods at a glance</li>
+          <li>Good at: seeing which hour or day was heaviest</li>
+          <li>Less useful for: tracking gradual acceleration</li>
+        </ul>
+        <div class="chart-preview" style="align-items: flex-end; gap: 5px; height: 72px; padding: 14px 20px 10px;">
+          <div class="bar-preview-bar" style="width:18px;height:22px;background:#6082B6;opacity:0.5;"></div>
+          <div class="bar-preview-bar" style="width:18px;height:30px;background:#6082B6;opacity:0.65;"></div>
+          <div class="bar-preview-bar" style="width:18px;height:18px;background:#6082B6;opacity:0.45;"></div>
+          <div class="bar-preview-bar" style="width:18px;height:38px;background:#6082B6;opacity:0.75;"></div>
+          <div class="bar-preview-bar" style="width:18px;height:46px;background:#6082B6;opacity:0.85;"></div>
+          <div class="bar-preview-bar" style="width:18px;height:52px;background:rgba(200,80,80,0.8);"></div>
+          <div class="bar-preview-bar" style="width:18px;height:44px;background:rgba(200,80,80,0.65);"></div>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div class="chart-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="5"/>
+            </svg>
+          </div>
+          <h3>Donut Chart</h3>
+          <span class="chart-badge">New</span>
+        </div>
+        <p>Two concentric rings — the outer ring shows your 5-hour session usage, the inner ring shows your 7-day weekly usage. The current percentage sits in the center of each ring. This is the most compact way to read both numbers at once without scanning a graph.</p>
+        <ul>
+          <li>Best for: a quick snapshot of where you stand right now</li>
+          <li>Good at: showing both session and weekly usage simultaneously</li>
+          <li>Less useful for: understanding historical trends</li>
+        </ul>
+        <div class="chart-preview" style="gap: 24px; height: 80px; align-items: center; justify-content: center;">
+          <svg viewBox="0 0 60 60" width="56" height="56" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="30" cy="30" r="26" fill="none" stroke="rgba(96,130,182,0.15)" stroke-width="5"/>
+            <circle cx="30" cy="30" r="26" fill="none" stroke="#6082B6" stroke-width="5" stroke-dasharray="82 82" stroke-dashoffset="20" stroke-linecap="round" transform="rotate(-90 30 30)"/>
+            <circle cx="30" cy="30" r="16" fill="none" stroke="rgba(96,130,182,0.15)" stroke-width="5"/>
+            <circle cx="30" cy="30" r="16" fill="none" stroke="#7B9CC8" stroke-width="5" stroke-dasharray="50 50" stroke-dashoffset="12" stroke-linecap="round" transform="rotate(-90 30 30)"/>
+            <text x="30" y="33" text-anchor="middle" font-size="8" fill="#fafafa" font-family="Inter,sans-serif" font-weight="600">63%</text>
+          </svg>
+          <div style="text-align:left;">
+            <div style="font-size:12px;color:#a1a1aa;margin-bottom:4px;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6082B6;margin-right:6px;vertical-align:middle;"></span>5h session</div>
+            <div style="font-size:12px;color:#a1a1aa;"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7B9CC8;margin-right:6px;vertical-align:middle;"></span>7d weekly</div>
+          </div>
+        </div>
+      </div>
+
+      <h2>How to Switch Chart Types</h2>
+
+      <p>Open the popover, click the gear icon to open Settings, then go to <strong>Display</strong>. You'll see a "Chart Style" picker with three options: Line, Bar, and Donut. The selection is saved automatically — the chart type persists across app restarts.</p>
+
+      <div class="tip-box">
+        <p><strong>Tip:</strong> The donut chart is the most compact option and works best if you keep the popover open while working. The line and bar charts are better for end-of-session review.</p>
+      </div>
+
+      <h2>Charts Are Colored by Your Accent Palette</h2>
+
+      <p>All chart types use the same color palette you've chosen in the Appearance section. The bar chart applies threshold-based coloring: bars below 60% appear in your low-usage color, 60–85% in the mid-range color, and above 85% in the high-usage color. The donut rings use the accent color from your palette, shifting toward the high color as usage climbs.</p>
+
+      <p>This means your charts stay visually consistent with the rest of the UI — if you've picked the Glaucous blue palette, everything from the progress bars to the donut rings will use the same blue tones. If you've set up a custom hex palette, that carries through to charts as well.</p>
+
+      <h2>Which Chart Should You Use?</h2>
+
+      <p>There's no single right answer — it depends on what question you're trying to answer:</p>
+
+      <ul>
+        <li><strong>Am I burning through my limit too fast right now?</strong> → Line chart. The slope tells you immediately.</li>
+        <li><strong>Which part of my workday is heaviest?</strong> → Bar chart. Tallest bar is your peak period.</li>
+        <li><strong>How close am I at this exact moment?</strong> → Donut chart. It's the most direct answer.</li>
+      </ul>
+
+      <p>Most users find that the donut chart works best for day-to-day use (it answers the immediate question fastest), while the line or bar chart is more useful when you're trying to understand a pattern over time.</p>
+
+      <h2>The Mini Bar Status Display</h2>
+
+      <p>If you prefer not to open the popover at all, the menu bar itself now shows your usage as two tiny horizontal bars — one for the 5-hour session and one for the 7-day weekly window. The bars fill proportionally and are colored using the same accent palette. You can switch between "Mini Bars", the original star icon, or a plain percentage text in Display settings under "Status Bar Style".</p>
+
+      <div class="cta-box">
+        <h3>See Your Usage in a New Way</h3>
+        <p>Download Claude + Codex Tracker for free and switch between chart types in seconds.</p>
+        <a href="https://github.com/1300Sarthak/claudeandcodex/releases" target="_blank" class="cta-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download Free for macOS
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>Claude + Codex Usage Tracker · Built by <a href="https://sarthak.lol">Sarthak Sethi</a> · <a href="/">Home</a> · <a href="/blog/">Blog</a> · <a href="https://github.com/1300Sarthak/claudeandcodex">GitHub</a></p>
+  </footer>
+</body>
+</html>
