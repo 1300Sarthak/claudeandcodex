@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" style="background-color: #0d0d0f;">
+<html lang="en" style="background-color: #080C14;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0d0d0f">
+  <meta name="theme-color" content="#080C14">
   <meta name="color-scheme" content="dark">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -62,16 +62,16 @@
 
   <style>
     :root {
-      --claude-orange: #da7756;
-      --claude-orange-dark: #b85a42;
-      --claude-orange-light: #e8956f;
-      --bg-dark: #0d0d0f;
-      --bg-card: #18181b;
-      --bg-card-hover: #1f1f23;
+      --accent: #6082B6;
+      --accent-dark: #4A6FA5;
+      --accent-light: #7B9CC8;
+      --bg-dark: #080C14;
+      --bg-card: #0F1623;
+      --bg-card-hover: #16202E;
       --text-primary: #fafafa;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
-      --border: #27272a;
+      --border: #1E2D45;
     }
 
     * {
@@ -82,12 +82,12 @@
 
     html {
       scroll-behavior: smooth;
-      background-color: #0d0d0f !important;
+      background-color: #080C14 !important;
     }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #0d0d0f !important;
+      background-color: #080C14 !important;
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
@@ -110,7 +110,7 @@
       transform: translateX(-50%);
       width: 800px;
       height: 600px;
-      background: radial-gradient(ellipse, rgba(218, 119, 86, 0.08) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(96, 130, 182, 0.08) 0%, transparent 70%);
       filter: blur(80px);
     }
 
@@ -147,7 +147,7 @@
       width: 36px;
       height: 36px;
       border-radius: 8px;
-      background: linear-gradient(135deg, var(--claude-orange) 0%, var(--claude-orange-dark) 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -183,7 +183,7 @@
     }
 
     .nav-cta {
-      background: var(--claude-orange);
+      background: var(--accent);
       color: white !important;
       padding: 10px 20px;
       border-radius: 8px;
@@ -191,7 +191,7 @@
     }
 
     .nav-cta:hover {
-      background: var(--claude-orange-light) !important;
+      background: var(--accent-light) !important;
       transform: translateY(-1px);
     }
 
@@ -248,7 +248,7 @@
     }
 
     .mobile-menu .mobile-cta {
-      background: var(--claude-orange);
+      background: var(--accent);
       color: white;
       padding: 14px 20px;
       border-radius: 10px;
@@ -279,12 +279,12 @@
       align-items: center;
       gap: 6px;
       padding: 6px 14px;
-      background: rgba(218, 119, 86, 0.1);
-      border: 1px solid rgba(218, 119, 86, 0.2);
+      background: rgba(96, 130, 182, 0.1);
+      border: 1px solid rgba(96, 130, 182, 0.2);
       border-radius: 100px;
       font-size: 13px;
       font-weight: 500;
-      color: var(--claude-orange);
+      color: var(--accent);
     }
 
     .article-date {
@@ -306,7 +306,7 @@
       line-height: 1.7;
       color: var(--text-secondary);
       margin-bottom: 48px;
-      border-left: 3px solid var(--claude-orange);
+      border-left: 3px solid var(--accent);
       padding-left: 20px;
     }
 
@@ -338,14 +338,14 @@
     }
 
     .article-wrapper a {
-      color: var(--claude-orange);
+      color: var(--accent);
       text-decoration: none;
-      border-bottom: 1px solid rgba(218, 119, 86, 0.3);
+      border-bottom: 1px solid rgba(96, 130, 182, 0.3);
       transition: border-color 0.2s;
     }
 
     .article-wrapper a:hover {
-      border-bottom-color: var(--claude-orange);
+      border-bottom-color: var(--accent);
     }
 
     .article-wrapper ul, .article-wrapper ol {
@@ -373,7 +373,7 @@
       border: 1px solid var(--border);
       border-radius: 4px;
       padding: 2px 8px;
-      color: var(--claude-orange-light);
+      color: var(--accent-light);
     }
 
     /* Tool Cards */
@@ -387,12 +387,12 @@
     }
 
     .tool-card:hover {
-      border-color: rgba(218, 119, 86, 0.3);
+      border-color: rgba(96, 130, 182, 0.3);
     }
 
     .tool-card.featured {
-      border-color: rgba(218, 119, 86, 0.4);
-      background: linear-gradient(135deg, rgba(218, 119, 86, 0.05) 0%, var(--bg-card) 50%);
+      border-color: rgba(96, 130, 182, 0.4);
+      background: linear-gradient(135deg, rgba(96, 130, 182, 0.05) 0%, var(--bg-card) 50%);
     }
 
     .tool-card-header {
@@ -415,7 +415,7 @@
     }
 
     .tool-card.featured .tool-card-rank {
-      background: linear-gradient(135deg, var(--claude-orange) 0%, var(--claude-orange-dark) 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       color: white;
     }
 
@@ -439,8 +439,8 @@
       border-radius: 100px;
       font-size: 12px;
       font-weight: 600;
-      background: rgba(218, 119, 86, 0.15);
-      color: var(--claude-orange);
+      background: rgba(96, 130, 182, 0.15);
+      color: var(--accent);
       margin-left: auto;
     }
 
@@ -572,11 +572,11 @@
     }
 
     .comparison-table .highlight-row td {
-      background: rgba(218, 119, 86, 0.05);
+      background: rgba(96, 130, 182, 0.05);
     }
 
     .comparison-table .highlight-row:hover td {
-      background: rgba(218, 119, 86, 0.08);
+      background: rgba(96, 130, 182, 0.08);
     }
 
     .check-yes {
@@ -603,7 +603,7 @@
     /* CTA Section */
     .blog-cta {
       background: var(--bg-card);
-      border: 1px solid rgba(218, 119, 86, 0.3);
+      border: 1px solid rgba(96, 130, 182, 0.3);
       border-radius: 16px;
       padding: 48px 40px;
       text-align: center;
@@ -632,7 +632,7 @@
       align-items: center;
       gap: 10px;
       padding: 16px 32px;
-      background: var(--claude-orange);
+      background: var(--accent);
       color: white;
       border-radius: 12px;
       font-size: 16px;
@@ -643,7 +643,7 @@
     }
 
     .blog-cta .download-btn:hover {
-      background: var(--claude-orange-light);
+      background: var(--accent-light);
       transform: translateY(-2px);
       border-bottom: none;
     }
@@ -718,7 +718,7 @@
     }
 
     .related-post-link:hover {
-      border-color: rgba(218, 119, 86, 0.3);
+      border-color: rgba(96, 130, 182, 0.3);
       background: var(--bg-card-hover);
     }
 
@@ -726,7 +726,7 @@
       width: 20px;
       height: 20px;
       flex-shrink: 0;
-      stroke: var(--claude-orange);
+      stroke: var(--accent);
       fill: none;
       stroke-width: 2;
     }
@@ -852,7 +852,7 @@
     src="https://datafa.st/js/script.js">
   </script>
 </head>
-<body style="background-color: #0d0d0f;">
+<body style="background-color: #080C14;">
   <div class="ambient"></div>
 
   <nav>

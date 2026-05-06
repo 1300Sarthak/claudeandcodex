@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" style="background-color: #0d0d0f;">
+<html lang="en" style="background-color: #080C14;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0d0d0f">
+  <meta name="theme-color" content="#080C14">
   <meta name="color-scheme" content="dark">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -61,16 +61,16 @@
   </script>
   <style>
     :root {
-      --claude-orange: #da7756;
-      --claude-orange-dark: #b85a42;
-      --claude-orange-light: #e8956f;
-      --bg-dark: #0d0d0f;
-      --bg-card: #18181b;
-      --bg-card-hover: #1f1f23;
+      --accent: #6082B6;
+      --accent-dark: #4A6FA5;
+      --accent-light: #7B9CC8;
+      --bg-dark: #080C14;
+      --bg-card: #0F1623;
+      --bg-card-hover: #16202E;
       --text-primary: #fafafa;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
-      --border: #27272a;
+      --border: #1E2D45;
     }
 
     * {
@@ -81,12 +81,12 @@
 
     html {
       scroll-behavior: smooth;
-      background-color: #0d0d0f !important;
+      background-color: #080C14 !important;
     }
 
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #0d0d0f !important;
+      background-color: #080C14 !important;
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
@@ -109,7 +109,7 @@
       transform: translateX(-50%);
       width: 800px;
       height: 600px;
-      background: radial-gradient(ellipse, rgba(218, 119, 86, 0.12) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(96, 130, 182, 0.12) 0%, transparent 70%);
       filter: blur(80px);
     }
 
@@ -120,7 +120,7 @@
       left: 0;
       right: 0;
       height: 50%;
-      background: radial-gradient(ellipse at bottom, rgba(218, 119, 86, 0.05) 0%, transparent 60%);
+      background: radial-gradient(ellipse at bottom, rgba(96, 130, 182, 0.05) 0%, transparent 60%);
     }
 
     /* Navigation */
@@ -156,7 +156,7 @@
       width: 36px;
       height: 36px;
       border-radius: 8px;
-      background: linear-gradient(135deg, var(--claude-orange) 0%, var(--claude-orange-dark) 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -192,7 +192,7 @@
     }
 
     .nav-cta {
-      background: var(--claude-orange);
+      background: var(--accent);
       color: white !important;
       padding: 10px 20px;
       border-radius: 8px;
@@ -200,7 +200,7 @@
     }
 
     .nav-cta:hover {
-      background: var(--claude-orange-light) !important;
+      background: var(--accent-light) !important;
       transform: translateY(-1px);
     }
 
@@ -258,7 +258,7 @@
     }
 
     .mobile-menu .mobile-cta {
-      background: var(--claude-orange);
+      background: var(--accent);
       color: white;
       padding: 14px 20px;
       border-radius: 10px;
@@ -320,7 +320,7 @@
     }
 
     .breadcrumb a:hover {
-      color: var(--claude-orange);
+      color: var(--accent);
     }
 
     .breadcrumb span {
@@ -341,7 +341,7 @@
     }
 
     article h1 span {
-      color: var(--claude-orange);
+      color: var(--accent);
     }
 
     .article-intro {
@@ -379,13 +379,13 @@
     }
 
     article a {
-      color: var(--claude-orange);
+      color: var(--accent);
       text-decoration: none;
       transition: color 0.2s;
     }
 
     article a:hover {
-      color: var(--claude-orange-light);
+      color: var(--accent-light);
       text-decoration: underline;
     }
 
@@ -419,7 +419,7 @@
     }
 
     .tip-card:hover {
-      border-color: rgba(218, 119, 86, 0.2);
+      border-color: rgba(96, 130, 182, 0.2);
     }
 
     .tip-number {
@@ -429,8 +429,8 @@
       width: 32px;
       height: 32px;
       border-radius: 8px;
-      background: rgba(218, 119, 86, 0.12);
-      color: var(--claude-orange);
+      background: rgba(96, 130, 182, 0.12);
+      color: var(--accent);
       font-size: 14px;
       font-weight: 700;
       font-family: 'JetBrains Mono', monospace;
@@ -454,8 +454,8 @@
     }
 
     .highlight-box {
-      background: rgba(218, 119, 86, 0.08);
-      border: 1px solid rgba(218, 119, 86, 0.2);
+      background: rgba(96, 130, 182, 0.08);
+      border: 1px solid rgba(96, 130, 182, 0.2);
       border-radius: 12px;
       padding: 20px 24px;
       margin: 24px 0;
@@ -468,7 +468,7 @@
     }
 
     .highlight-box strong {
-      color: var(--claude-orange);
+      color: var(--accent);
     }
 
     code {
@@ -479,7 +479,7 @@
       border: 1px solid var(--border);
       padding: 2px 8px;
       border-radius: 6px;
-      color: var(--claude-orange);
+      color: var(--accent);
     }
 
     /* CTA Section */
@@ -518,7 +518,7 @@
       display: inline-flex;
       align-items: center;
       gap: 10px;
-      background: var(--claude-orange);
+      background: var(--accent);
       color: white;
       text-decoration: none;
       padding: 16px 32px;
@@ -529,7 +529,7 @@
     }
 
     .cta-download-btn:hover {
-      background: var(--claude-orange-light);
+      background: var(--accent-light);
       transform: translateY(-2px);
       color: white;
       text-decoration: none;
@@ -658,7 +658,7 @@
   </style>
   <script defer data-website-id="dfid_HMM2pp9guqaCpR3KioH9l" src="https://datafa.st/js/script.js"></script>
 </head>
-<body style="background-color: #0d0d0f;">
+<body style="background-color: #080C14;">
   <div class="ambient"></div>
 
   <nav>

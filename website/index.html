@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" style="background-color: #0d0d0f;">
+<html lang="en" style="background-color: #080C14;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0d0d0f">
+  <meta name="theme-color" content="#080C14">
   <meta name="color-scheme" content="dark">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
@@ -27,22 +27,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --claude-orange: #da7756;
-      --claude-orange-dark: #b85a42;
-      --claude-orange-light: #e8956f;
-      --bg-dark: #0d0d0f;
-      --bg-card: #18181b;
-      --bg-card-hover: #1f1f23;
+      --accent: #6082B6;
+      --accent-dark: #4A6FA5;
+      --accent-light: #7B9CC8;
+      --bg-dark: #080C14;
+      --bg-card: #0F1623;
+      --bg-card-hover: #16202E;
       --text-primary: #fafafa;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
-      --border: #27272a;
+      --border: #1E2D45;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; background-color: #0d0d0f !important; }
+    html { scroll-behavior: smooth; background-color: #080C14 !important; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #0d0d0f !important;
+      background-color: #080C14 !important;
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
@@ -57,14 +57,14 @@
       top: -20%; left: 50%;
       transform: translateX(-50%);
       width: 800px; height: 600px;
-      background: radial-gradient(ellipse, rgba(218,119,86,0.12) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(96,130,182,0.12) 0%, transparent 70%);
       filter: blur(80px);
     }
     .ambient::after {
       content: '';
       position: absolute;
       bottom: 0; left: 0; right: 0; height: 50%;
-      background: radial-gradient(ellipse at bottom, rgba(218,119,86,0.05) 0%, transparent 60%);
+      background: radial-gradient(ellipse at bottom, rgba(96,130,182,0.05) 0%, transparent 60%);
     }
 
     /* Nav */
@@ -82,7 +82,7 @@
     .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--text-primary); }
     .logo-icon {
       width: 36px; height: 36px; border-radius: 8px;
-      background: linear-gradient(135deg, var(--claude-orange) 0%, var(--claude-orange-dark) 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       display: flex; align-items: center; justify-content: center;
     }
     .logo-icon svg { width: 20px; height: 20px; }
@@ -91,12 +91,12 @@
     .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
     .nav-links a:hover { color: var(--text-primary); }
     .nav-cta {
-      background: var(--claude-orange) !important;
+      background: var(--accent) !important;
       color: white !important;
       padding: 10px 20px; border-radius: 8px;
       transition: background 0.2s, transform 0.2s !important;
     }
-    .nav-cta:hover { background: var(--claude-orange-light) !important; transform: translateY(-1px); }
+    .nav-cta:hover { background: var(--accent-light) !important; transform: translateY(-1px); }
     .mobile-menu-toggle { display: none; background: none; border: none; cursor: pointer; padding: 8px; color: var(--text-primary); }
     .mobile-menu-toggle svg { width: 24px; height: 24px; stroke: currentColor; }
     .mobile-menu {
@@ -109,7 +109,7 @@
     .mobile-menu a { color: var(--text-secondary); text-decoration: none; font-size: 16px; font-weight: 500; padding: 12px 0; border-bottom: 1px solid var(--border); transition: color 0.2s; }
     .mobile-menu a:last-child { border-bottom: none; }
     .mobile-menu a:hover { color: var(--text-primary); }
-    .mobile-menu .mobile-cta { background: var(--claude-orange); color: white; padding: 14px 20px; border-radius: 10px; text-align: center; border-bottom: none; margin-top: 8px; }
+    .mobile-menu .mobile-cta { background: var(--accent); color: white; padding: 14px 20px; border-radius: 10px; text-align: center; border-bottom: none; margin-top: 8px; }
 
     /* Hero */
     .hero {
@@ -120,34 +120,34 @@
     .hero-badge {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 8px 16px;
-      background: rgba(218,119,86,0.1); border: 1px solid rgba(218,119,86,0.2);
+      background: rgba(96,130,182,0.1); border: 1px solid rgba(96,130,182,0.2);
       border-radius: 100px; font-size: 13px; font-weight: 500;
-      color: var(--claude-orange-light); margin-bottom: 24px;
+      color: var(--accent-light); margin-bottom: 24px;
       animation: fadeInUp 0.6s ease-out;
     }
     .hero-badge svg { width: 16px; height: 16px; }
-    .hero-icon { width: 140px; height: 140px; margin-bottom: 40px; animation: fadeInUp 0.6s ease-out 0.1s both; filter: drop-shadow(0 20px 40px rgba(218,119,86,0.3)); }
+    .hero-icon { width: 140px; height: 140px; margin-bottom: 40px; animation: fadeInUp 0.6s ease-out 0.1s both; filter: drop-shadow(0 20px 40px rgba(96,130,182,0.3)); }
     .hero-icon-inner {
       width: 100%; height: 100%; border-radius: 32px;
-      background: linear-gradient(135deg, var(--claude-orange) 0%, var(--claude-orange-dark) 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       display: flex; align-items: center; justify-content: center;
       position: relative; overflow: hidden;
     }
     .hero-icon-inner::before { content: ''; position: absolute; inset: 0; background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%); }
     .hero-icon-inner svg { width: 70px; height: 70px; position: relative; z-index: 1; }
     h1 { font-size: clamp(36px, 7vw, 68px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 24px; animation: fadeInUp 0.6s ease-out 0.2s both; }
-    h1 span { background: linear-gradient(135deg, var(--claude-orange-light) 0%, var(--claude-orange) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    h1 span { background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .hero-subtitle { font-size: 20px; color: var(--text-secondary); max-width: 580px; margin: 0 auto 48px; animation: fadeInUp 0.6s ease-out 0.3s both; }
     .hero-cta { display: flex; flex-direction: column; align-items: center; gap: 16px; animation: fadeInUp 0.6s ease-out 0.4s both; }
     .hero-buttons { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center; }
     .download-btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 12px;
       padding: 18px 28px; min-width: 240px;
-      background: var(--claude-orange); color: white; text-decoration: none;
+      background: var(--accent); color: white; text-decoration: none;
       font-size: 16px; font-weight: 600; border-radius: 14px; transition: all 0.3s;
-      box-shadow: 0 4px 24px rgba(218,119,86,0.4);
+      box-shadow: 0 4px 24px rgba(96,130,182,0.4);
     }
-    .download-btn:hover { background: var(--claude-orange-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(218,119,86,0.5); }
+    .download-btn:hover { background: var(--accent-light); transform: translateY(-2px); box-shadow: 0 8px 32px rgba(96,130,182,0.5); }
     .download-btn svg { width: 20px; height: 20px; }
     .github-btn {
       display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -187,7 +187,7 @@
     .popup-title-row { display: flex; align-items: center; gap: 6px; }
     .popup-title { font-weight: 600; font-size: 13px; color: var(--text-primary); }
     .popup-refresh { color: var(--text-muted); cursor: pointer; font-size: 13px; transition: color 0.2s; }
-    .popup-refresh:hover { color: var(--claude-orange); }
+    .popup-refresh:hover { color: var(--accent); }
     .usage-section { margin-bottom: 12px; }
     .usage-section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; }
     .usage-section-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
@@ -211,12 +211,12 @@
     .features-header p { color: var(--text-secondary); font-size: 18px; }
     .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; max-width: 1040px; margin: 0 auto; }
     .feature-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 28px; transition: all 0.3s; }
-    .feature-card:hover { background: var(--bg-card-hover); border-color: rgba(218,119,86,0.3); transform: translateY(-4px); }
-    .feature-icon { width: 44px; height: 44px; background: rgba(218,119,86,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
-    .feature-icon svg { width: 22px; height: 22px; stroke: var(--claude-orange); }
+    .feature-card:hover { background: var(--bg-card-hover); border-color: rgba(96,130,182,0.3); transform: translateY(-4px); }
+    .feature-icon { width: 44px; height: 44px; background: rgba(96,130,182,0.1); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 18px; }
+    .feature-icon svg { width: 22px; height: 22px; stroke: var(--accent); }
     .feature-card h3 { font-size: 17px; font-weight: 600; margin-bottom: 10px; }
     .feature-card p { color: var(--text-secondary); font-size: 14px; line-height: 1.65; }
-    .feature-new { display: inline-block; font-size: 10px; font-weight: 700; color: var(--claude-orange); background: rgba(218,119,86,0.1); border: 1px solid rgba(218,119,86,0.2); border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; letter-spacing: 0.05em; }
+    .feature-new { display: inline-block; font-size: 10px; font-weight: 700; color: var(--accent); background: rgba(96,130,182,0.1); border: 1px solid rgba(96,130,182,0.2); border-radius: 4px; padding: 1px 6px; margin-left: 6px; vertical-align: middle; letter-spacing: 0.05em; }
 
     /* What's new table */
     .whats-new { position: relative; z-index: 1; padding: 60px 24px 80px; }
@@ -236,13 +236,13 @@
     .orig-label { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
 
     /* Roadmap */
-    .roadmap { position: relative; z-index: 1; padding: 60px 24px 80px; background: linear-gradient(180deg, transparent 0%, rgba(218,119,86,0.03) 50%, transparent 100%); }
+    .roadmap { position: relative; z-index: 1; padding: 60px 24px 80px; background: linear-gradient(180deg, transparent 0%, rgba(96,130,182,0.03) 50%, transparent 100%); }
     .roadmap-header { text-align: center; margin-bottom: 48px; }
     .roadmap-header h2 { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 12px; }
     .roadmap-header p { color: var(--text-secondary); font-size: 16px; }
     .roadmap-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; max-width: 900px; margin: 0 auto; }
     .roadmap-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px; display: flex; align-items: flex-start; gap: 14px; }
-    .roadmap-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(218,119,86,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
+    .roadmap-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(96,130,182,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 18px; }
     .roadmap-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
     .roadmap-text p { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
 
@@ -251,11 +251,11 @@
     .attribution-inner { max-width: 760px; margin: 0 auto; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 36px; }
     .attribution-header { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 20px; }
     .attribution-body { font-size: 15px; color: var(--text-secondary); line-height: 1.8; margin-bottom: 24px; }
-    .attribution-body a { color: var(--claude-orange); text-decoration: none; }
+    .attribution-body a { color: var(--accent); text-decoration: none; }
     .attribution-body a:hover { text-decoration: underline; }
     .attribution-links { display: flex; gap: 12px; flex-wrap: wrap; }
     .attr-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: 9px; text-decoration: none; font-size: 14px; font-weight: 500; transition: all 0.2s; border: 1px solid var(--border); background: var(--bg-dark); color: var(--text-secondary); }
-    .attr-btn:hover { border-color: rgba(218,119,86,0.3); color: var(--text-primary); transform: translateY(-1px); }
+    .attr-btn:hover { border-color: rgba(96,130,182,0.3); color: var(--text-primary); transform: translateY(-1px); }
     .attr-btn svg { width: 16px; height: 16px; fill: currentColor; }
 
     /* Creator */
@@ -263,14 +263,14 @@
     .creator-inner { display: inline-flex; flex-direction: column; align-items: center; gap: 16px; }
     .creator-label { font-size: 14px; color: var(--text-muted); }
     .creator-card { display: flex; align-items: center; gap: 14px; padding: 18px 28px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; text-decoration: none; color: var(--text-primary); transition: all 0.3s; }
-    .creator-card:hover { background: var(--bg-card-hover); border-color: rgba(218,119,86,0.3); transform: translateY(-2px); }
-    .creator-avatar { width: 44px; height: 44px; border-radius: 22px; background: linear-gradient(135deg, var(--claude-orange), var(--claude-orange-dark)); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: white; }
+    .creator-card:hover { background: var(--bg-card-hover); border-color: rgba(96,130,182,0.3); transform: translateY(-2px); }
+    .creator-avatar { width: 44px; height: 44px; border-radius: 22px; background: linear-gradient(135deg, var(--accent), var(--accent-dark)); display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: white; }
     .creator-info { text-align: left; }
     .creator-name { font-weight: 600; font-size: 16px; }
     .creator-handle { font-size: 13px; color: var(--text-muted); }
     .creator-links { display: flex; gap: 10px; }
     .creator-link-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 8px; text-decoration: none; font-size: 13px; font-weight: 500; transition: all 0.2s; border: 1px solid var(--border); color: var(--text-secondary); background: var(--bg-card); }
-    .creator-link-btn:hover { color: var(--text-primary); border-color: rgba(218,119,86,0.3); }
+    .creator-link-btn:hover { color: var(--text-primary); border-color: rgba(96,130,182,0.3); }
     .creator-link-btn svg { width: 14px; height: 14px; fill: currentColor; }
 
     /* FAQ */
@@ -280,10 +280,10 @@
     .faq-header p { color: var(--text-secondary); font-size: 16px; }
     .faq-grid { max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; gap: 14px; }
     .faq-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 22px; transition: all 0.3s; }
-    .faq-item:hover { border-color: rgba(218,119,86,0.2); }
+    .faq-item:hover { border-color: rgba(96,130,182,0.2); }
     .faq-question { font-size: 15px; font-weight: 600; margin-bottom: 10px; }
     .faq-answer { font-size: 14px; color: var(--text-secondary); line-height: 1.7; }
-    .faq-answer a { color: var(--claude-orange); text-decoration: none; }
+    .faq-answer a { color: var(--accent); text-decoration: none; }
     .faq-answer a:hover { text-decoration: underline; }
 
     /* Footer */
@@ -310,7 +310,7 @@
     }
   </style>
 </head>
-<body style="background-color: #0d0d0f;">
+<body style="background-color: #080C14;">
   <div class="ambient"></div>
 
   <nav>
@@ -407,13 +407,13 @@
               <span class="menu-item">Edit</span>
               <span class="menu-item">View</span>
               <span class="menu-item">···</span>
-              <span class="menu-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1L9 6L13 3L10 7L15 8L10 9L13 13L9 10L8 15L7 10L3 13L6 9L1 8L6 7L3 3L7 6L8 1Z" fill="#da7756"/></svg></span>
-              <span class="menu-item" style="color: var(--claude-orange); font-weight: 600;" id="menuBarText">67%·34%</span>
+              <span class="menu-icon"><svg viewBox="0 0 16 16" fill="none"><path d="M8 1L9 6L13 3L10 7L15 8L10 9L13 13L9 10L8 15L7 10L3 13L6 9L1 8L6 7L3 3L7 6L8 1Z" fill="#6082B6"/></svg></span>
+              <span class="menu-item" style="color: var(--accent); font-weight: 600;" id="menuBarText">67%·34%</span>
             </div>
             <div class="usage-popup" id="usagePopup">
               <div class="popup-header">
                 <div class="popup-title-row">
-                  <span style="color: var(--claude-orange); font-size: 13px;">⚡</span>
+                  <span style="color: var(--accent); font-size: 13px;">⚡</span>
                   <span class="popup-title">Claude Usage</span>
                 </div>
                 <span class="popup-refresh" onclick="refreshUsage()">↻ Refresh</span>
@@ -451,7 +451,7 @@
         </div>
       </div>
       <div style="text-align:center; margin-top: 14px;">
-        <a href="javascript:void(0)" onclick="refreshUsage()" style="color: var(--text-muted); font-size: 13px; text-decoration: none; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--claude-orange)'" onmouseout="this.style.color='var(--text-muted)'">Click to see it in action</a>
+        <a href="javascript:void(0)" onclick="refreshUsage()" style="color: var(--text-muted); font-size: 13px; text-decoration: none; cursor: pointer; transition: color 0.2s;" onmouseover="this.style.color='var(--accent)'" onmouseout="this.style.color='var(--text-muted)'">Click to see it in action</a>
       </div>
     </div>
   </section>
@@ -515,7 +515,7 @@
   <section class="whats-new" id="whats-new">
     <div class="whats-new-header">
       <h2>What's new vs the original</h2>
-      <p>Built on top of <a href="https://github.com/Artzainnn/ClaudeUsageBar" target="_blank" style="color: var(--claude-orange); text-decoration: none;">ClaudeUsageBar by Maxime B.</a> — everything that was added</p>
+      <p>Built on top of <a href="https://github.com/Artzainnn/ClaudeUsageBar" target="_blank" style="color: var(--accent); text-decoration: none;">ClaudeUsageBar by Maxime B.</a> — everything that was added</p>
     </div>
     <div class="comparison-table">
       <table>
@@ -550,7 +550,7 @@
   <section class="roadmap" id="roadmap">
     <div class="roadmap-header">
       <h2>What's coming next</h2>
-      <p>Planned features — PRs welcome at <a href="https://github.com/1300Sarthak/claudeandcodex" target="_blank" style="color: var(--claude-orange); text-decoration: none;">github.com/1300Sarthak/claudeandcodex</a></p>
+      <p>Planned features — PRs welcome at <a href="https://github.com/1300Sarthak/claudeandcodex" target="_blank" style="color: var(--accent); text-decoration: none;">github.com/1300Sarthak/claudeandcodex</a></p>
     </div>
     <div class="roadmap-grid">
       <div class="roadmap-item">

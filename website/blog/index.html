@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" style="background-color: #0d0d0f;">
+<html lang="en" style="background-color: #080C14;">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#0d0d0f">
+  <meta name="theme-color" content="#080C14">
   <meta name="color-scheme" content="dark">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -30,22 +30,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <style>
     :root {
-      --claude-orange: #da7756;
-      --claude-orange-dark: #b85a42;
-      --claude-orange-light: #e8956f;
-      --bg-dark: #0d0d0f;
-      --bg-card: #18181b;
-      --bg-card-hover: #1f1f23;
+      --accent: #6082B6;
+      --accent-dark: #4A6FA5;
+      --accent-light: #7B9CC8;
+      --bg-dark: #080C14;
+      --bg-card: #0F1623;
+      --bg-card-hover: #16202E;
       --text-primary: #fafafa;
       --text-secondary: #a1a1aa;
       --text-muted: #71717a;
-      --border: #27272a;
+      --border: #1E2D45;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; background-color: #0d0d0f !important; }
+    html { scroll-behavior: smooth; background-color: #080C14 !important; }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #0d0d0f !important;
+      background-color: #080C14 !important;
       color: var(--text-primary);
       line-height: 1.6;
       overflow-x: hidden;
@@ -57,7 +57,7 @@
     .ambient::before {
       content: ''; position: absolute; top: -20%; left: 50%; transform: translateX(-50%);
       width: 800px; height: 600px;
-      background: radial-gradient(ellipse, rgba(218, 119, 86, 0.12) 0%, transparent 70%);
+      background: radial-gradient(ellipse, rgba(96, 130, 182, 0.12) 0%, transparent 70%);
       filter: blur(80px);
     }
 
@@ -79,7 +79,7 @@
     }
     .logo-icon {
       width: 36px; height: 36px; border-radius: 8px;
-      background: linear-gradient(135deg, var(--claude-orange) 0%, var(--claude-orange-dark) 100%);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
       display: flex; align-items: center; justify-content: center;
     }
     .logo-icon svg { width: 20px; height: 20px; }
@@ -90,13 +90,13 @@
       font-size: 14px; font-weight: 500; transition: color 0.2s;
     }
     .nav-links a:hover { color: var(--text-primary); }
-    .nav-links a.active { color: var(--claude-orange); }
+    .nav-links a.active { color: var(--accent); }
     .nav-cta {
-      background: var(--claude-orange); color: white !important;
+      background: var(--accent); color: white !important;
       padding: 10px 20px; border-radius: 8px;
       transition: background 0.2s, transform 0.2s !important;
     }
-    .nav-cta:hover { background: var(--claude-orange-light) !important; transform: translateY(-1px); }
+    .nav-cta:hover { background: var(--accent-light) !important; transform: translateY(-1px); }
 
     /* Mobile menu */
     .mobile-menu-toggle {
@@ -133,7 +133,7 @@
       letter-spacing: -0.03em;
       margin-bottom: 16px;
     }
-    .page-header h1 span { color: var(--claude-orange); }
+    .page-header h1 span { color: var(--accent); }
     .page-header p {
       color: var(--text-secondary);
       font-size: 18px;
@@ -163,7 +163,7 @@
     }
     .blog-card:hover {
       background: var(--bg-card-hover);
-      border-color: rgba(218, 119, 86, 0.3);
+      border-color: rgba(96, 130, 182, 0.3);
       transform: translateY(-2px);
     }
     .blog-card-meta {
@@ -175,8 +175,8 @@
       color: var(--text-muted);
     }
     .blog-card-tag {
-      background: rgba(218, 119, 86, 0.1);
-      color: var(--claude-orange);
+      background: rgba(96, 130, 182, 0.1);
+      color: var(--accent);
       padding: 4px 10px;
       border-radius: 4px;
       font-size: 12px;
@@ -199,7 +199,7 @@
       align-items: center;
       gap: 6px;
       margin-top: 16px;
-      color: var(--claude-orange);
+      color: var(--accent);
       font-size: 14px;
       font-weight: 500;
     }
@@ -237,12 +237,12 @@
     }
     .cta-btn {
       display: inline-flex; align-items: center; gap: 8px;
-      background: var(--claude-orange); color: white;
+      background: var(--accent); color: white;
       padding: 14px 28px; border-radius: 10px;
       text-decoration: none; font-weight: 600; font-size: 16px;
       transition: background 0.2s, transform 0.2s;
     }
-    .cta-btn:hover { background: var(--claude-orange-light); transform: translateY(-2px); }
+    .cta-btn:hover { background: var(--accent-light); transform: translateY(-2px); }
     .cta-btn svg { width: 20px; height: 20px; }
 
     /* Footer */
