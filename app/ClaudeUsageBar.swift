@@ -69,6 +69,13 @@ enum UsageTab: String, CaseIterable, Identifiable {
     var id: String { rawValue }
 }
 
+enum StatusBarStyle: String, CaseIterable, Identifiable {
+    case icon = "Icon"
+    case miniBars = "Mini Bars"
+    case text = "Text %"
+    var id: String { rawValue }
+}
+
 struct UsageHistoryPoint: Codable, Identifiable {
     let timestamp: Date
     let primaryPercentage: Double
@@ -285,16 +292,30 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func updateStatusIcon(sessionPct: Int, weeklyPct: Int) {
         guard let button = statusItem?.button else { return }
-        let showBoth = usageManager?.showBothInStatusBar ?? false
-        let color: NSColor
-        if sessionPct < 70 { color = NSColor(red: 0.13, green: 0.77, blue: 0.37, alpha: 1.0) }
-        else if sessionPct < 90 { color = NSColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 1.0) }
-        else { color = NSColor(red: 1.0, green: 0.23, blue: 0.19, alpha: 1.0) }
-        button.image = createSparkIcon(color: color)
-        if showBoth {
-            button.title = " \(sessionPct)%·\(weeklyPct)%"
-        } else {
+        let style = usageManager?.statusBarStyle ?? .miniBars
+        let sessionColor: NSColor
+        if sessionPct < 70 { sessionColor = NSColor(red: 0.13, green: 0.77, blue: 0.37, alpha: 1.0) }
+        else if sessionPct < 90 { sessionColor = NSColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 1.0) }
+        else { sessionColor = NSColor(red: 1.0, green: 0.23, blue: 0.19, alpha: 1.0) }
+
+        switch style {
+        case .icon:
+            button.image = createSparkIcon(color: sessionColor)
+            button.title = ""
+            button.imagePosition = .imageOnly
+        case .miniBars:
+            button.image = createDualBarIcon(
+                sessionFrac: Double(sessionPct) / 100.0,
+                weeklyFrac: Double(weeklyPct) / 100.0,
+                sessionPct: sessionPct, weeklyPct: weeklyPct
+            )
             button.title = " \(sessionPct)%"
+            button.imagePosition = .imageLeft
+        case .text:
+            button.image = nil
+            let showBoth = usageManager?.showBothInStatusBar ?? false
+            button.title = showBoth ? "\(sessionPct)%·\(weeklyPct)%" : "\(sessionPct)%"
+            button.imagePosition = .noImage
         }
     }
 
@@ -322,6 +343,43 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         path.close()
         color.setFill()
         path.fill()
+        image.unlockFocus()
+        image.isTemplate = false
+        return image
+    }
+
+    func createDualBarIcon(sessionFrac: Double, weeklyFrac: Double, sessionPct: Int, weeklyPct: Int) -> NSImage {
+        let barW: CGFloat = 38
+        let barH: CGFloat = 4
+        let gap: CGFloat = 3
+        let totalH: CGFloat = barH * 2 + gap + 2
+        let image = NSImage(size: NSSize(width: barW, height: totalH))
+        image.lockFocus()
+
+        let sessionColor: NSColor
+        if sessionPct < 70 { sessionColor = NSColor(red: 0.13, green: 0.77, blue: 0.37, alpha: 1.0) }
+        else if sessionPct < 90 { sessionColor = NSColor(red: 1.0, green: 0.8, blue: 0.0, alpha: 1.0) }
+        else { sessionColor = NSColor(red: 1.0, green: 0.23, blue: 0.19, alpha: 1.0) }
+        let weeklyColor = NSColor(red: 0.37, green: 0.51, blue: 0.71, alpha: 1.0)
+        let trackColor = NSColor(white: 0.5, alpha: 0.35)
+
+        let topY: CGFloat = barH + gap + 1
+        let botY: CGFloat = 1
+
+        // Session bar (top)
+        trackColor.setFill()
+        NSBezierPath(roundedRect: NSRect(x: 0, y: topY, width: barW, height: barH), xRadius: 2, yRadius: 2).fill()
+        sessionColor.setFill()
+        let sw = barW * CGFloat(min(max(sessionFrac, 0), 1))
+        if sw > 0 { NSBezierPath(roundedRect: NSRect(x: 0, y: topY, width: sw, height: barH), xRadius: 2, yRadius: 2).fill() }
+
+        // Weekly bar (bottom)
+        trackColor.setFill()
+        NSBezierPath(roundedRect: NSRect(x: 0, y: botY, width: barW, height: barH), xRadius: 2, yRadius: 2).fill()
+        weeklyColor.setFill()
+        let ww = barW * CGFloat(min(max(weeklyFrac, 0), 1))
+        if ww > 0 { NSBezierPath(roundedRect: NSRect(x: 0, y: botY, width: ww, height: barH), xRadius: 2, yRadius: 2).fill() }
+
         image.unlockFocus()
         image.isTemplate = false
         return image
@@ -394,6 +452,7 @@ class UsageManager: ObservableObject {
     @Published var themeMode: ThemeMode = .system
     @Published var barStyle: BarStyle = .rounded
     @Published var accentPreset: AccentColorPreset = .default
+    @Published var statusBarStyle: StatusBarStyle = .miniBars
     @Published var showBothInStatusBar: Bool = false
     @Published var sideBySideLayout: Bool = false
     @Published var showGraph: Bool = true
@@ -444,6 +503,7 @@ class UsageManager: ObservableObject {
         if let raw = UserDefaults.standard.string(forKey: "theme_mode"), let t = ThemeMode(rawValue: raw) { themeMode = t }
         if let raw = UserDefaults.standard.string(forKey: "bar_style"), let b = BarStyle(rawValue: raw) { barStyle = b }
         if let raw = UserDefaults.standard.string(forKey: "accent_preset"), let a = AccentColorPreset(rawValue: raw) { accentPreset = a }
+        if let raw = UserDefaults.standard.string(forKey: "status_bar_style"), let s = StatusBarStyle(rawValue: raw) { statusBarStyle = s }
         showBothInStatusBar = UserDefaults.standard.object(forKey: "show_both_status_bar") as? Bool ?? false
         sideBySideLayout = UserDefaults.standard.object(forKey: "side_by_side_layout") as? Bool ?? false
         showGraph = UserDefaults.standard.object(forKey: "show_graph") as? Bool ?? true
@@ -461,6 +521,7 @@ class UsageManager: ObservableObject {
         UserDefaults.standard.set(themeMode.rawValue, forKey: "theme_mode")
         UserDefaults.standard.set(barStyle.rawValue, forKey: "bar_style")
         UserDefaults.standard.set(accentPreset.rawValue, forKey: "accent_preset")
+        UserDefaults.standard.set(statusBarStyle.rawValue, forKey: "status_bar_style")
         UserDefaults.standard.set(showBothInStatusBar, forKey: "show_both_status_bar")
         UserDefaults.standard.set(sideBySideLayout, forKey: "side_by_side_layout")
         UserDefaults.standard.set(showGraph, forKey: "show_graph")
@@ -1076,9 +1137,20 @@ struct DisplaySectionView: View {
 
             SettingsCard {
                 VStack(alignment: .leading, spacing: 14) {
+                    SettingsRow(label: "Status bar style", description: "How usage is shown in the menu bar") {
+                        Picker("", selection: Binding(
+                            get: { usageManager.statusBarStyle },
+                            set: { usageManager.statusBarStyle = $0; usageManager.saveSettings(); usageManager.updateStatusBar() }
+                        )) {
+                            ForEach(StatusBarStyle.allCases) { s in Text(s.rawValue).tag(s) }
+                        }
+                        .pickerStyle(.segmented)
+                        .frame(width: 220)
+                    }
+                    Divider()
                     SettingsToggleRow(
                         label: "Show 5h and 7d in menu bar",
-                        description: "Display both window percentages in the status bar, e.g. 12%·34%",
+                        description: "Show both percentages in Text % mode, e.g. 12%·34%",
                         isOn: Binding(get: { usageManager.showBothInStatusBar }, set: { usageManager.showBothInStatusBar = $0; usageManager.saveSettings(); usageManager.updateStatusBar() })
                     )
                     Divider()
